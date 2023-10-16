@@ -3,6 +3,7 @@ import { permit2WitnessTypes } from "../constants/types.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import type { FloodChain } from "../types/floodChain.js"
+import { bigIntToJson } from "./utils.js"
 
 export type NewOrderParams = {
 	tokensIn: Record<`0x${string}`, bigint>
@@ -128,7 +129,7 @@ export async function submitOrder(
 		},
 		body: JSON.stringify(
 			{ order: args.order, signature: args.signature },
-			(_, v) => (typeof v === "bigint" ? v.toString() : v)
+			bigIntToJson
 		)
 	})
 

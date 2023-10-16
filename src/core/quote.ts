@@ -1,4 +1,5 @@
 import type { FloodChain } from "../types/floodChain.js"
+import { bigIntToJson } from "./utils.js"
 
 export type QuoteParams = {
 	/** An object where each key-value pair is a token and the quantity of it to sell. */
@@ -33,10 +34,13 @@ export async function quote(
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({
-			tokensIn: args.tokensIn,
-			tokenOut: args.tokenOut
-		})
+		body: JSON.stringify(
+			{
+				tokensIn: args.tokensIn,
+				tokenOut: args.tokenOut
+			},
+			bigIntToJson
+		)
 	})
 
 	if (response.status !== 200) {
