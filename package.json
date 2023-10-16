@@ -27,6 +27,7 @@
   },
   "type": "module",
   "workspaces": [
-    "src"
+    "src",
+    "test"
   ]
 }
