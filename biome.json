@@ -3,6 +3,20 @@
 	"organizeImports": {
 		"enabled": false
 	},
+	"files": {
+		"ignore": [
+			"node_modules",
+			"**/node_modules",
+			"cache",
+			"coverage",
+			"tsconfig.json",
+			"tsconfig.*.json",
+			"_cjs",
+			"_esm",
+			"_types",
+			"bun.lockb"
+		]
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

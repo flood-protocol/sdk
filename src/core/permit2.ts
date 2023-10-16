@@ -1,18 +1,15 @@
 import type { TypedDataDomain } from "viem"
-import { permit2Address } from "../constants/address.js"
+import type { FloodChain } from "../types/floodChain.js"
 
 /**
  *
- * @param chainId
+ * @param chain
  * @returns The Permit2 domain for the given chain.
  */
-export function permit2Domain(
-	chainId: number,
-	address: `0x${string}` = permit2Address
-): TypedDataDomain {
+export function permit2Domain(chain: FloodChain): TypedDataDomain {
 	return {
 		name: "Permit2",
-		chainId,
-		verifyingContract: address
+		chainId: chain.id,
+		verifyingContract: chain.contracts.permit2.address
 	}
 }

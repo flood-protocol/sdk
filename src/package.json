@@ -33,14 +33,24 @@
       "default": "./_cjs/index.js"
     },
     "./types": {
-        "types": "./_types/types/index.d.ts",
-        "import": "./_esm/types/index.js",
-        "default": "./_cjs/types/index.js"
+      "types": "./_types/types/index.d.ts",
+      "import": "./_esm/types/index.js",
+      "default": "./_cjs/types/index.js"
     },
     "./core": {
-        "types": "./_types/core/index.d.ts",
-        "import": "./_esm/core/index.js",
-        "default": "./_cjs/core/index.js"
+      "types": "./_types/core/index.d.ts",
+      "import": "./_esm/core/index.js",
+      "default": "./_cjs/core/index.js"
+    },
+    "./chains": {
+      "types": "./_types/chains/index.d.ts",
+      "import": "./_esm/chains/index.js",
+      "default": "./_cjs/chains/index.js"
+    },
+    "./constants": {
+      "types": "./_types/constants/index.d.ts",
+      "import": "./_esm/constants/index.js",
+      "default": "./_cjs/constants/index.js"
     }
   },
   "peerDependencies": {

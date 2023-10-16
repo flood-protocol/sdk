@@ -1,5 +1,5 @@
 import { hashTypedData } from "viem/utils"
-import type { FloodEndpoint } from "../types/floodChain.js"
+import type { FloodChain } from "../types/floodChain.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import { permit2WitnessTypes } from "../constants/types.js"
@@ -10,9 +10,12 @@ import { permit2WitnessTypes } from "../constants/types.js"
  *
  * @param order order to cancel
  */
-export function cancelOrderHash(chainId: number, order: Order): `0x${string}` {
+export function cancelOrderHash(
+	chain: FloodChain,
+	order: Order
+): `0x${string}` {
 	return hashTypedData({
-		domain: permit2Domain(chainId),
+		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
 		primaryType: "Order",
 		message: order
@@ -20,7 +23,6 @@ export function cancelOrderHash(chainId: number, order: Order): `0x${string}` {
 }
 
 export type CancelOrderParams = {
-	floodEndpoint: FloodEndpoint
 	/** Order to cancel */
 	order: Order
 	/** EIP712 signature of the order to cancel.
@@ -35,24 +37,28 @@ export type CancelOrderParams = {
  * @see CancelOrderParams
  *
  * @example
+ * import {arbitrum} from "flood-sdk/chains";
+ *
  * const order = {
  *   // ...some order
  * }
  *
  * // Get the correct message hash
- * const msgHash = cancelOrderHash(arbitrum.chainId, order)
+ * const msgHash = cancelOrderHash(arbitrum, order)
  * // Sign the message hash
  * const signature = await signTypedData(msgHash)
- * cancelOrder({
- *    floodEndpoint: "https://arbitrum.flood.bid",
+ * cancelOrder(arbitrum, {
  *    order,
  *    signature
  * }).then(() => console.log("Order cancelled successfully")
  *
  *
  */
-export async function cancelOrder(args: CancelOrderParams): Promise<void> {
-	const response = await fetch(`${args.floodEndpoint}/orders/cancel`, {
+export async function cancelOrder(
+	chain: FloodChain,
+	args: CancelOrderParams
+): Promise<void> {
+	const response = await fetch(`${chain.floodUrl}/orders/cancel`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"

@@ -1,9 +1,8 @@
 import { hashTypedData } from "viem/utils"
-import { bookAddress, defaultZoneAddress } from "../constants/address.js"
 import { permit2WitnessTypes } from "../constants/types.js"
-import type { FloodEndpoint } from "../types/floodChain.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
+import type { FloodChain } from "../types/floodChain.js"
 
 export type NewOrderParams = {
 	tokensIn: Record<`0x${string}`, bigint>
@@ -16,10 +15,13 @@ export type NewOrderParams = {
  * @description
  * Generates a new order to be signed and submitted to the Flood API.
  * If not set, `zone` defaults to the default Flood zone.
+ * @param chain Chain the order is on.
  * @see NewOrderParams
  *
  * @example
- * const order = newOrder({
+ * import {arbitrum} from "flood-sdk/chains";
+ *
+ * const order = newOrder(arbitrum, {
  *      offerer: "0x...",
  *      zone: "0x...",
  *      offer: [
@@ -33,15 +35,18 @@ export type NewOrderParams = {
  * })
  * const orderHash = orderHash(arbitrum.chainId, order)
  */
-export function newOrder({
-	tokensIn,
-	tokenOut,
-	minAmountOut,
-	offerer,
-	zone = defaultZoneAddress,
-	deadline,
-	nonce
-}: NewOrderParams): Order {
+export function newOrder(
+	chain: FloodChain,
+	{
+		tokensIn,
+		tokenOut,
+		minAmountOut,
+		offerer,
+		zone = chain.contracts.defaultZone.address,
+		deadline,
+		nonce
+	}: NewOrderParams
+): Order {
 	return {
 		offerer,
 		zone,
@@ -59,12 +64,14 @@ export function newOrder({
  * @description
  * Generates the message hash to sign for submitting an order. This is done by signing a `PermitBatchWitnessTransferFrom` message.
  *
- * @param chainId The chain ID of the chain the order is on.
+ * @param chain Chain the order is on.
  * @param order The order to sign.
  * @returns The message hash to sign.
  *
  * @example
- * const order = newOrder({
+ * import {arbitrum} from "flood-sdk/chains";
+ *
+ * const order = newOrder(arbitrum, {
  *      offerer: "0x...",
  *      zone: "0x...",
  *      offer: [
@@ -78,16 +85,16 @@ export function newOrder({
  * })
  * const orderHash = orderHash(arbitrum.chainId, order)
  */
-export function orderHash(chainId: number, order: Order): `0x${string}` {
+export function orderHash(chain: FloodChain, order: Order): `0x${string}` {
 	const permit = {
 		permitted: order.offer,
-		spender: bookAddress,
+		spender: chain.contracts.book.address,
 		nonce: order.nonce,
 		deadline: order.deadline,
 		witness: order
 	}
 	return hashTypedData({
-		domain: permit2Domain(chainId),
+		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
 		primaryType: "PermitBatchWitnessTransferFrom",
 		message: permit
@@ -95,7 +102,6 @@ export function orderHash(chainId: number, order: Order): `0x${string}` {
 }
 
 export type SubmitOrderParams = {
-	endpoint: FloodEndpoint
 	order: Order
 	signature: `0x${string}`
 }
@@ -103,17 +109,19 @@ export type SubmitOrderParams = {
 /**
  * @description
  * Broadcasts an order to the Flood protocol.
- * @param args NewOrderParams
+ * @param args {@link SubmitOrderParams}
  *
  * @example
- * submitOrder({
- *      endpoint: "https://arbitrum.flood.bid",
+ * submitOrder(chain, {
  *      order,
  *      signature
  * }).then(() => console.log("Order submitted successfully"))
  */
-export async function submitOrder(args: SubmitOrderParams): Promise<void> {
-	const response = await fetch(`${args.endpoint}/orders/new`, {
+export async function submitOrder(
+	chain: FloodChain,
+	args: SubmitOrderParams
+): Promise<void> {
+	const response = await fetch(`${chain.floodUrl}/orders/new`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
