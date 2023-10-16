@@ -1,0 +1,19 @@
+{
+	"include": [],
+	"compilerOptions": {
+		"incremental": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"esModuleInterop": false,
+		"allowSyntheticDefaultImports": false,
+		"forceConsistentCasingInFileNames": true,
+		"verbatimModuleSyntax": true,
+		"importHelpers": true,
+		"moduleResolution": "NodeNext",
+		"module": "NodeNext",
+		"target": "ES2021",
+		"lib": ["ES2022", "DOM"],
+		"skipLibCheck": true
+	}
+}
