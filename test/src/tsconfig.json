@@ -2,6 +2,8 @@
     "compilerOptions": {
       "types": ["bun-types"],
       "baseUrl": ".",
+      "target": "ES2021",
+      "moduleResolution": "NodeNext",
       "paths": {
         "~flood-sdk/*": ["../../src/*"]
       }

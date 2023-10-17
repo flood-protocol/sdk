@@ -1,8 +1,9 @@
 import { expect, test, beforeAll } from "bun:test"
 
-import { quote } from "~flood-sdk/core/quote.js"
+import { quote, getOrders} from "~flood-sdk/core/index.js"
 import { arbitrum } from "~flood-sdk/chains/arbitrum.js"
 import { server } from "./mocks/server.js"
+import { mockOrder } from "mocks/data.js"
 
 beforeAll(() => {
 	server.listen()
@@ -21,4 +22,14 @@ test("quote", async () => {
 	});
     expect(amountQuote).toBe(1n)
 
+})
+
+test("get orders", async () => {
+	// const orders = await getOrders(arbitrum, mockOrder.offerer);
+	// expect(orders).toEqual([{
+	// 	orderHash: `0x${1n}`,
+	// 	order: mockOrder,
+	// 	signature: `0x${3n}`,
+	// 	orderStatus: "valid"
+	// }])
 })
