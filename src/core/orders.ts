@@ -1,3 +1,4 @@
+import EventSource from "eventsource"
 import type { FloodChain } from "../types/floodChain.js"
 import type { Order, OrderStatus } from "../types/order.js"
 import { observe } from "./utils.js"
@@ -29,9 +30,9 @@ export async function getOrders(
 	chain: FloodChain,
 	offerer: `0x${string}`
 ): Promise<GetOrderItem[]> {
-	const url = new URL(`${chain.floodUrl}/orders`)
-	const params = { offerer: offerer }
-	url.search = new URLSearchParams(params).toString()
+	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
+	
+	
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {

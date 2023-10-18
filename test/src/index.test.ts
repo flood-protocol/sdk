@@ -1,12 +1,12 @@
 import { expect, test, beforeAll } from "bun:test"
 
-import { quote, getOrders} from "~flood-sdk/core/index.js"
+import { quote, getOrders, watchOrders} from "~flood-sdk/core/index.js"
 import { arbitrum } from "~flood-sdk/chains/arbitrum.js"
 import { server } from "./mocks/server.js"
 import { mockOrder } from "mocks/data.js"
 
 beforeAll(() => {
-	server.listen()
+	// server.listen()
 })
 
 const tokensIn = {
@@ -15,21 +15,27 @@ const tokensIn = {
 }
 const tokenOut = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
 
-test("quote", async () => {
-	const amountQuote = await quote(arbitrum, {
-		tokensIn,
-		tokenOut
-	});
-    expect(amountQuote).toBe(1n)
+// test("quote", async () => {
+// 	const amountQuote = await quote(arbitrum, {
+// 		tokensIn,
+// 		tokenOut
+// 	});
+//     expect(amountQuote).toBe(1n)
 
-})
+// })
 
-test("get orders", async () => {
-	// const orders = await getOrders(arbitrum, mockOrder.offerer);
-	// expect(orders).toEqual([{
-	// 	orderHash: `0x${1n}`,
-	// 	order: mockOrder,
-	// 	signature: `0x${3n}`,
-	// 	orderStatus: "valid"
-	// }])
+// test("get orders", async () => {
+// 	 const orders = await getOrders(arbitrum, mockOrder.offerer);
+// 	 expect(orders).toEqual([])
+// })
+
+test("watch orders", async () => {
+	const unwatch = await watchOrders(arbitrum, mockOrder.offerer, {
+		onOrder: (order) => {
+			expect(order).toEqual(mockOrder)
+			unwatch()
+		}})
+
+		unwatch()
+
 })

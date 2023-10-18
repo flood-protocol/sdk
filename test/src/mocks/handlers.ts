@@ -36,7 +36,6 @@ interface GetOrderResponse {
 }
 
 
-
 export const handlers = [
 	quote
 ]

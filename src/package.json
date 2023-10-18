@@ -55,11 +55,15 @@
   },
   "peerDependencies": {
     "typescript": ">=5.0.4",
-    "viem": "^1.14.0"
+    "viem": "^1.14.0",
+    "eventsource": "^2.0.2"
   },
   "peerDependenciesMeta": {
     "typescript": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/eventsource": "^1.1.13"
   }
 }
