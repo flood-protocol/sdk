@@ -4,7 +4,7 @@ import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import type { FloodChain } from "../types/floodChain.js"
 
-export type NewOrderParams = {
+export type NewOrderParameters = {
 	tokensIn: Record<`0x${string}`, bigint>
 	tokenOut: `0x${string}`
 	minAmountOut: bigint
@@ -16,7 +16,7 @@ export type NewOrderParams = {
  * Generates a new order to be signed and submitted to the Flood API.
  * If not set, `zone` defaults to the default Flood zone.
  * @param chain Chain the order is on.
- * @see NewOrderParams
+ * @param params {@link NewOrderParameters}
  *
  * @example
  * import {arbitrum} from "flood-sdk/chains";
@@ -45,7 +45,7 @@ export function newOrder(
 		zone = chain.contracts.defaultZone.address,
 		deadline,
 		nonce
-	}: NewOrderParams
+	}: NewOrderParameters
 ): Order {
 	return {
 		offerer,
@@ -101,7 +101,7 @@ export function orderHash(chain: FloodChain, order: Order): `0x${string}` {
 	})
 }
 
-export type SubmitOrderParams = {
+export type SubmitOrderParameters = {
 	order: Order
 	signature: `0x${string}`
 }
@@ -109,7 +109,7 @@ export type SubmitOrderParams = {
 /**
  * @description
  * Broadcasts an order to the Flood protocol.
- * @param args {@link SubmitOrderParams}
+ * @param params {@link SubmitOrderParameters}
  *
  * @example
  * submitOrder(chain, {
@@ -119,7 +119,7 @@ export type SubmitOrderParams = {
  */
 export async function submitOrder(
 	chain: FloodChain,
-	args: SubmitOrderParams
+	args: SubmitOrderParameters
 ): Promise<void> {
 	const response = await fetch(`${chain.floodUrl}/orders/new`, {
 		method: "POST",

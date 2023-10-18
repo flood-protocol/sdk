@@ -39,7 +39,7 @@ export function observe<TCallbacks extends Callbacks>(
 		const listeners = getListeners()
 		listenersCache.set(
 			observerId,
-			listeners.filter((cb: any) => cb.id !== callbackId)
+			listeners.filter((cb: { id: number }) => cb.id !== callbackId)
 		)
 	}
 

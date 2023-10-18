@@ -1,12 +1,22 @@
 {
   "name": "flood-sdk",
+  "description": "Typescript SDK for interacting with the Flood protocol",
   "version": "0.0.2-alpha.1",
+  "type": "module",
   "author": "Flood",
   "main": "./_cjs/index.js",
   "module": "./_esm/index.js",
-  "peerDependencies": {
-    "viem": "^1.14.0"
-  },
+  "types": "./_types/index.d.ts",
+  "typings": "./_types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "*",
+    "!**/*.tsbuildinfo",
+    "!**/*.test.ts",
+    "!**/*.test.ts.snap",
+    "!**/*.test-d.ts",
+    "!tsconfig.build.json"
+  ],
   "exports": {
     ".": {
       "types": "./_types/index.d.ts",
@@ -32,17 +42,11 @@
       "types": "./_types/constants/index.d.ts",
       "import": "./_esm/constants/index.js",
       "default": "./_cjs/constants/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
-  "description": "Typescript SDK for interacting with the Flood protocol",
-  "files": [
-    "*",
-    "!**/*.tsbuildinfo",
-    "!**/*.test.ts",
-    "!**/*.test.ts.snap",
-    "!**/*.test-d.ts",
-    "!tsconfig.build.json"
-  ],
+  "license": "MIT",
+  "repository": "flood-protocol/sdk",
   "keywords": [
     "eth",
     "ethereum",
@@ -51,9 +55,7 @@
     "routing",
     "web3"
   ],
-  "license": "MIT",
-  "sideEffects": false,
-  "type": "module",
-  "types": "./_types/index.d.ts",
-  "typings": "./_types/index.d.ts"
+  "dependencies": {
+    "viem": "^1.16.6"
+  }
 }

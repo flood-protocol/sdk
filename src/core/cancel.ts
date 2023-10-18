@@ -22,7 +22,7 @@ export function cancelOrderHash(
 	})
 }
 
-export type CancelOrderParams = {
+export type CancelOrderParameters = {
 	/** Order to cancel */
 	order: Order
 	/** EIP712 signature of the order to cancel.
@@ -34,7 +34,7 @@ export type CancelOrderParams = {
  * @description
  *  Cancels an order removing it from the off-chain order book.
  *
- * @see CancelOrderParams
+ * @param params {@link CancelOrderParameters}
  *
  * @example
  * import {arbitrum} from "flood-sdk/chains";
@@ -56,7 +56,7 @@ export type CancelOrderParams = {
  */
 export async function cancelOrder(
 	chain: FloodChain,
-	args: CancelOrderParams
+	{ order, signature }: CancelOrderParameters
 ): Promise<void> {
 	const response = await fetch(`${chain.floodUrl}/orders/cancel`, {
 		method: "POST",
@@ -64,12 +64,12 @@ export async function cancelOrder(
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({
-			order: args.order,
-			signature: args.signature
+			order,
+			signature
 		})
 	})
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
 }

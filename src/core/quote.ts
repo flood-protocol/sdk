@@ -1,7 +1,7 @@
 import type { FloodChain } from "../types/floodChain.js"
 import { stringify } from "viem"
 
-export type QuoteParams = {
+export type QuoteParameters = {
 	/** An object where each key-value pair is a token and the quantity of it to sell. */
 	tokensIn: Record<`0x${string}`, bigint>
 	/** The token to receive. */
@@ -11,7 +11,7 @@ export type QuoteParams = {
 /**
  * @description Gets a quote from the Flood API.
  *
- * @param args - {@link QuoteParams}
+ * @param params - {@link QuoteParameters}
  *
  * @example
  * import {arbitrum} from "flood-sdk/chains";
@@ -27,7 +27,7 @@ export type QuoteParams = {
  */
 export async function quote(
 	chain: FloodChain,
-	args: QuoteParams
+	args: QuoteParameters
 ): Promise<bigint> {
 	const response = await fetch(`${chain.floodUrl}/quote`, {
 		method: "POST",
@@ -40,7 +40,7 @@ export async function quote(
 		})
 	})
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
 

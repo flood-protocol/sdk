@@ -3,7 +3,7 @@ import type { FloodChain } from "../types/floodChain.js"
 
 /**
  *
- * @param chain
+ * @param chain - {@link FloodChain}
  * @returns The Permit2 domain for the given chain.
  */
 export function permit2Domain(chain: FloodChain): TypedDataDomain {

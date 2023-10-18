@@ -171,7 +171,7 @@ type OnFulfilledOrder = (order: FulfilledOrder) => void
 type OnCancelledOrder = (order: CancelledOrder) => void
 type OnError = (error: Error) => void
 
-type WatchOrdersParams = {
+export type WatchOrdersParameters = {
 	onError?: OnError
 } & AtLeastOne<{
 	onOrder: OnOrder
@@ -187,7 +187,7 @@ type WatchOrdersParams = {
  *
  * @param chain - {@link FloodChain} The chain to watch orders on.
  * @param offerer - The address of the offerer listed in the orders.
- * @param params - {@link WatchOrdersParams} At least one of `onOrder`, `onNew`, `onFulfilled`, `onCancelled` must be provided.
+ * @param params - {@link WatchOrdersParameters} At least one of `onOrder`, `onNew`, `onFulfilled`, `onCancelled` must be provided.
  *
  * @returns A function to call to stop watching orders.
  * @example
@@ -207,7 +207,7 @@ type WatchOrdersParams = {
 export async function watchOrders(
 	chain: FloodChain,
 	offerer: `0x${string}`,
-	{ onOrder, onNew, onFulfilled, onCancelled, onError }: WatchOrdersParams
+	{ onOrder, onNew, onFulfilled, onCancelled, onError }: WatchOrdersParameters
 ): Promise<() => void> {
 	return observe(
 		`watchOrders-${offerer}`,
@@ -245,7 +245,7 @@ export async function watchOrders(
 						emit.onCancelled?.(order)
 						break
 					default:
-						throw new Error(`Unknown order status`)
+						throw new Error("Unknown order status")
 				}
 			}
 			return () => {

@@ -34,7 +34,7 @@ export class Stream<Item> implements AsyncIterable<Item> {
 		> {
 			if (!response.body) {
 				controller.abort()
-				throw new Error(`Attempted to iterate over a response with no body`)
+				throw new Error("Attempted to iterate over a response with no body")
 			}
 
 			const lineDecoder = new LineDecoder()
@@ -76,7 +76,7 @@ export class Stream<Item> implements AsyncIterable<Item> {
 						try {
 							data = JSON.parse(sse.data)
 						} catch (e) {
-							console.error(`Could not parse message into JSON:`, sse.data)
+							console.error(`Could not parse message into JSON: ${sse.data}`)
 							console.error(`From chunk:`, sse.raw)
 							throw e
 						}
@@ -320,7 +320,7 @@ class LineDecoder {
 		let lines = text.split(LineDecoder.NEWLINE_REGEXP)
 
 		if (lines.length === 1 && !trailingNewline) {
-			this.buffer.push(lines[0]!)
+			this.buffer.push(lines[0])
 			return []
 		}
 
@@ -363,7 +363,7 @@ class LineDecoder {
 
 			throw new Error(
 				`Unexpected: received non-Uint8Array/ArrayBuffer (${
-					(bytes as any).constructor.name
+					(bytes as ArrayBuffer).constructor.name
 				}) in a web platform. Please report this error.`
 			)
 		}
