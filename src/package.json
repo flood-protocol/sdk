@@ -2,30 +2,12 @@
   "name": "flood-sdk",
   "version": "0.0.2-alpha.0",
   "author": "Flood",
-  "license": "MIT",
-  "keywords": [
-    "eth",
-    "ethereum",
-    "flood",
-    "trading",
-    "routing",
-    "web3"
-  ],
-  "description": "Typescript SDK for interacting with the Flood protocol",
   "main": "./_cjs/index.js",
   "module": "./_esm/index.js",
-  "types": "./_types/index.d.ts",
-  "typings": "./_types/index.d.ts",
-  "type": "module",
-  "sideEffects": false,
-  "files": [
-    "*",
-    "!**/*.tsbuildinfo",
-    "!**/*.test.ts",
-    "!**/*.test.ts.snap",
-    "!**/*.test-d.ts",
-    "!tsconfig.build.json"
-  ],
+  "peerDependencies": {
+    "viem": "^1.14.0",
+    "@microsoft/fetch-event-source": "^2.0.1"
+  },
   "exports": {
     ".": {
       "types": "./_types/index.d.ts",
@@ -53,17 +35,31 @@
       "default": "./_cjs/constants/index.js"
     }
   },
-  "peerDependencies": {
-    "typescript": ">=5.0.4",
-    "viem": "^1.14.0",
-    "eventsource": "^2.0.2"
-  },
+  "description": "Typescript SDK for interacting with the Flood protocol",
+  "files": [
+    "*",
+    "!**/*.tsbuildinfo",
+    "!**/*.test.ts",
+    "!**/*.test.ts.snap",
+    "!**/*.test-d.ts",
+    "!tsconfig.build.json"
+  ],
+  "keywords": [
+    "eth",
+    "ethereum",
+    "flood",
+    "trading",
+    "routing",
+    "web3"
+  ],
+  "license": "MIT",
   "peerDependenciesMeta": {
     "typescript": {
       "optional": true
     }
   },
-  "devDependencies": {
-    "@types/eventsource": "^1.1.13"
-  }
+  "sideEffects": false,
+  "type": "module",
+  "types": "./_types/index.d.ts",
+  "typings": "./_types/index.d.ts"
 }

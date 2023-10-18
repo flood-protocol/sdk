@@ -126,10 +126,7 @@ export async function submitOrder(
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: 
-		stringify(
-			{ order: args.order, signature: args.signature }
-		)
+		body: stringify({ order: args.order, signature: args.signature })
 	})
 
 	if (response.status !== 200) {

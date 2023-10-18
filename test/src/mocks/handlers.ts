@@ -22,7 +22,8 @@ const quote = rest.post<QuoteBody, QuoteResponse>(
 				amountQuote: BigInt(1).toString()
 			})
 		)
-	})
+	}
+)
 
 interface GetOrderBody {
 	offerer: `0x${string}`
@@ -30,12 +31,9 @@ interface GetOrderBody {
 
 interface GetOrderResponse {
 	orderHash: `0x${string}`
-	order: Order,
+	order: Order
 	signature: `0x${string}`
 	orderStatus: OrderStatus
 }
 
-
-export const handlers = [
-	quote
-]
+export const handlers = [quote]

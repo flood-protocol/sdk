@@ -1,5 +1,3 @@
-import type { BlockNumber } from "viem"
-
 export type Item = {
 	token: `0x${string}`
 	amount: bigint
@@ -13,28 +11,42 @@ export type Order = {
 	deadline: bigint
 }
 
-enum Status {
-	/// The order is valid.
-	Valid = "valid",
-	/// The order has been fulfilled.
-	Fulfilled = "fulfilled",
-	/// The offerer's balance is not sufficient.
-	InsufficientBalance = "insufficientBalance",
-	/// The order's nonce is not valid anymore.
-	InvalidNonce = "invalidNonce",
-	/// The order has been canceled.
-	Canceled = "canceled"
+export enum OrderStatus {
+	/** Order is new and can be filled */
+	NEW = "new",
+	/** Order has been fulfilled */
+	FULFILLED = "fulfilled",
+	/** Order has been cancelled */
+	CANCELLED = "cancelled"
 }
 
-export type OrderStatus = Status.Valid | {
-			Fulfilled: Status.Fulfilled
-	  }
-	| {
-			status: Status.InsufficientBalance
-			blockNumber: BlockNumber
-	  }
-	| {
-			status: Status.InvalidNonce
-			blockNumber: BlockNumber
-	  }
-	| Status.Canceled
+type OrderWithSignatureAndHash = Order & {
+	hash: `0x${string}`
+	signature: `0x${string}`
+}
+
+export type NewOrder = OrderWithSignatureAndHash & {
+	status: OrderStatus.NEW
+}
+
+export type FulfilledOrder = OrderWithSignatureAndHash & {
+	status: OrderStatus.FULFILLED
+	txHash: `0x${string}`
+	amountOut: bigint
+}
+
+export enum CancelReason {
+	/** The offerer willingly canceled the order */
+	ACTION = "action",
+	/** The nonce was invalid. This means the order was delete on-chain */
+	INVALID_NONCE = "invalid-nonce",
+	/** The offerer had less balance than the order offer */
+	INSUFFICIENT_BALANCE = "insufficient-balance"
+}
+
+export type CancelledOrder = OrderWithSignatureAndHash & {
+	status: OrderStatus.CANCELLED
+	cause: CancelReason
+}
+
+export type OrderWithStatus = NewOrder | FulfilledOrder | CancelledOrder

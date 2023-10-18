@@ -34,12 +34,10 @@ export async function quote(
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: stringify(
-			{
-				tokensIn: args.tokensIn,
-				tokenOut: args.tokenOut
-			}
-		)
+		body: stringify({
+			tokensIn: args.tokensIn,
+			tokenOut: args.tokenOut
+		})
 	})
 
 	if (response.status !== 200) {

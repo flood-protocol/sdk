@@ -1,6 +1,6 @@
 import { expect, test, beforeAll } from "bun:test"
 
-import { quote, getOrders, watchOrders} from "~flood-sdk/core/index.js"
+import { quote, getOrders, watchOrders } from "~flood-sdk/core/index.js"
 import { arbitrum } from "~flood-sdk/chains/arbitrum.js"
 import { server } from "./mocks/server.js"
 import { mockOrder } from "mocks/data.js"
@@ -34,8 +34,8 @@ test("watch orders", async () => {
 		onOrder: (order) => {
 			expect(order).toEqual(mockOrder)
 			unwatch()
-		}})
+		}
+	})
 
-		unwatch()
-
+	unwatch()
 })

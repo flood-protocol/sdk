@@ -1,7 +1,8 @@
-export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U];
+export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
+	U[keyof U]
 
 // All taken from https://github.com/wagmi-dev/viem
-type ErrorType<name extends string = 'Error'> = Error & { name: name }
+type ErrorType<name extends string = "Error"> = Error & { name: name }
 type MaybePromise<T> = T | Promise<T>
 type Callback = ((...args: any[]) => any) | undefined
 type Callbacks = Record<string, Callback>
@@ -9,13 +10,13 @@ type Callbacks = Record<string, Callback>
 export type ObserveErrorType = ErrorType
 
 export const listenersCache = /*#__PURE__*/ new Map<
-  string,
-  { id: number; fns: Callbacks }[]
+	string,
+	{ id: number; fns: Callbacks }[]
 >()
 export const cleanupCache = /*#__PURE__*/ new Map<string, () => void>()
 
 type EmitFunction<TCallbacks extends Callbacks> = (
-  emit: TCallbacks,
+	emit: TCallbacks
 ) => MaybePromise<void | (() => void)>
 
 let callbackCount = 0
@@ -26,49 +27,49 @@ let callbackCount = 0
  * for both instances of the observer.
  */
 export function observe<TCallbacks extends Callbacks>(
-  observerId: string,
-  callbacks: TCallbacks,
-  fn: EmitFunction<TCallbacks>,
+	observerId: string,
+	callbacks: TCallbacks,
+	fn: EmitFunction<TCallbacks>
 ) {
-  const callbackId = ++callbackCount
+	const callbackId = ++callbackCount
 
-  const getListeners = () => listenersCache.get(observerId) || []
+	const getListeners = () => listenersCache.get(observerId) || []
 
-  const unsubscribe = () => {
-    const listeners = getListeners()
-    listenersCache.set(
-      observerId,
-      listeners.filter((cb: any) => cb.id !== callbackId),
-    )
-  }
+	const unsubscribe = () => {
+		const listeners = getListeners()
+		listenersCache.set(
+			observerId,
+			listeners.filter((cb: any) => cb.id !== callbackId)
+		)
+	}
 
-  const unwatch = () => {
-    const cleanup = cleanupCache.get(observerId)
-    if (getListeners().length === 1 && cleanup) cleanup()
-    unsubscribe()
-  }
+	const unwatch = () => {
+		const cleanup = cleanupCache.get(observerId)
+		if (getListeners().length === 1 && cleanup) cleanup()
+		unsubscribe()
+	}
 
-  const listeners = getListeners()
-  listenersCache.set(observerId, [
-    ...listeners,
-    { id: callbackId, fns: callbacks },
-  ])
+	const listeners = getListeners()
+	listenersCache.set(observerId, [
+		...listeners,
+		{ id: callbackId, fns: callbacks }
+	])
 
-  if (listeners && listeners.length > 0) return unwatch
+	if (listeners && listeners.length > 0) return unwatch
 
-  const emit: TCallbacks = {} as TCallbacks
-  for (const key in callbacks) {
-    emit[key] = ((
-      ...args: Parameters<NonNullable<TCallbacks[keyof TCallbacks]>>
-    ) => {
-      const listeners = getListeners()
-      if (listeners.length === 0) return
-      listeners.forEach((listener) => listener.fns[key]?.(...args))
-    }) as TCallbacks[Extract<keyof TCallbacks, string>]
-  }
+	const emit: TCallbacks = {} as TCallbacks
+	for (const key in callbacks) {
+		emit[key] = ((
+			...args: Parameters<NonNullable<TCallbacks[keyof TCallbacks]>>
+		) => {
+			const listeners = getListeners()
+			if (listeners.length === 0) return
+			listeners.forEach((listener) => listener.fns[key]?.(...args))
+		}) as TCallbacks[Extract<keyof TCallbacks, string>]
+	}
 
-  const cleanup = fn(emit)
-  if (typeof cleanup === 'function') cleanupCache.set(observerId, cleanup)
+	const cleanup = fn(emit)
+	if (typeof cleanup === "function") cleanupCache.set(observerId, cleanup)
 
-  return unwatch
+	return unwatch
 }
