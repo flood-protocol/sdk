@@ -22,7 +22,8 @@ export {
 export {
 	permit2Domain,
 	nextNonce,
-	permit2DomainSeparator
+	permit2DomainSeparator,
+	permitFromOrder
 } from "./core/permit2.js"
 export type { NextNonceParameters } from "./core/permit2.js"
 export type {
@@ -34,6 +35,8 @@ export {
 	permit2NonceFinderAddress,
 	permit2NonceFinderAbi,
 	permit2WitnessTypes,
+	NewOrderPrimaryType,
+	CancelOrderPrimaryType,
 	permit2Abi,
 	permit2Address,
 	bookAbi,
