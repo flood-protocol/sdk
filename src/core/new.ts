@@ -1,5 +1,5 @@
 import { hashTypedData, stringify } from "viem/utils"
-import { permit2WitnessTypes } from "../constants/types.js"
+import { permit2WitnessTypes, NewOrderPrimaryType } from "../constants/types.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import type { FloodChain } from "../types/floodChain.js"
@@ -96,7 +96,7 @@ export function orderHash(chain: FloodChain, order: Order): `0x${string}` {
 	return hashTypedData({
 		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
-		primaryType: "PermitBatchWitnessTransferFrom",
+		primaryType: NewOrderPrimaryType,
 		message: permit
 	})
 }

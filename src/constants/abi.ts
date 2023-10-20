@@ -448,4 +448,674 @@ export const permit2Abi = [
 		stateMutability: "nonpayable",
 		type: "function"
 	}
-]
+] as const
+
+export const bookAbi = [
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "permit2",
+				type: "address"
+			}
+		],
+		stateMutability: "nonpayable",
+		type: "constructor"
+	},
+	{
+		inputs: [],
+		name: "InsufficientAmountReceived",
+		type: "error"
+	},
+	{
+		inputs: [],
+		name: "NotAContract",
+		type: "error"
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: "bytes32",
+				name: "orderHash",
+				type: "bytes32"
+			},
+			{
+				indexed: true,
+				internalType: "address",
+				name: "offerer",
+				type: "address"
+			},
+			{
+				indexed: true,
+				internalType: "address",
+				name: "fulfiller",
+				type: "address"
+			}
+		],
+		name: "OrderFulfilled",
+		type: "event"
+	},
+	{
+		inputs: [],
+		name: "PERMIT2",
+		outputs: [
+			{
+				internalType: "contract ISignatureTransfer",
+				name: "",
+				type: "address"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			},
+			{
+				internalType: "bytes",
+				name: "signature",
+				type: "bytes"
+			},
+			{
+				internalType: "address",
+				name: "fulfiller",
+				type: "address"
+			},
+			{
+				internalType: "bytes",
+				name: "extraData",
+				type: "bytes"
+			}
+		],
+		name: "fulfillOrder",
+		outputs: [],
+		stateMutability: "nonpayable",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				internalType: "address",
+				name: "user",
+				type: "address"
+			},
+			{
+				internalType: "uint256",
+				name: "nonce",
+				type: "uint256"
+			}
+		],
+		name: "getNonceStatus",
+		outputs: [
+			{
+				internalType: "bool",
+				name: "",
+				type: "bool"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			}
+		],
+		name: "getOrderHash",
+		outputs: [
+			{
+				internalType: "bytes32",
+				name: "",
+				type: "bytes32"
+			}
+		],
+		stateMutability: "pure",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			}
+		],
+		name: "getOrderStatus",
+		outputs: [
+			{
+				internalType: "bool",
+				name: "",
+				type: "bool"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			},
+			{
+				internalType: "address",
+				name: "fulfiller",
+				type: "address"
+			},
+			{
+				internalType: "address",
+				name: "caller",
+				type: "address"
+			},
+			{
+				internalType: "bytes",
+				name: "extraData",
+				type: "bytes"
+			}
+		],
+		name: "getOrderValidity",
+		outputs: [
+			{
+				internalType: "bool",
+				name: "",
+				type: "bool"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			}
+		],
+		name: "getPermitHash",
+		outputs: [
+			{
+				internalType: "bytes32",
+				name: "",
+				type: "bytes32"
+			}
+		],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		stateMutability: "payable",
+		type: "receive"
+	}
+] as const
+
+export const zoneAbi = [
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			},
+			{
+				internalType: "address",
+				name: "book",
+				type: "address"
+			},
+			{
+				internalType: "address",
+				name: "caller",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "orderHash",
+				type: "bytes32"
+			}
+		],
+		name: "validateOrder",
+		outputs: [],
+		stateMutability: "view",
+		type: "function"
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{
+						internalType: "address",
+						name: "offerer",
+						type: "address"
+					},
+					{
+						internalType: "address",
+						name: "zone",
+						type: "address"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "offer",
+						type: "tuple[]"
+					},
+					{
+						components: [
+							{
+								internalType: "address",
+								name: "token",
+								type: "address"
+							},
+							{
+								internalType: "uint256",
+								name: "amount",
+								type: "uint256"
+							}
+						],
+						internalType: "struct IFloodPlain.Item[]",
+						name: "consideration",
+						type: "tuple[]"
+					},
+					{
+						internalType: "uint256",
+						name: "deadline",
+						type: "uint256"
+					},
+					{
+						internalType: "uint256",
+						name: "nonce",
+						type: "uint256"
+					}
+				],
+				internalType: "struct IFloodPlain.Order",
+				name: "order",
+				type: "tuple"
+			},
+			{
+				internalType: "address",
+				name: "book",
+				type: "address"
+			},
+			{
+				internalType: "address",
+				name: "fulfiller",
+				type: "address"
+			},
+			{
+				internalType: "address",
+				name: "caller",
+				type: "address"
+			},
+			{
+				internalType: "bytes32",
+				name: "orderHash",
+				type: "bytes32"
+			},
+			{
+				internalType: "bytes",
+				name: "context",
+				type: "bytes"
+			}
+		],
+		name: "validateOrder",
+		outputs: [],
+		stateMutability: "view",
+		type: "function"
+	}
+] as const

@@ -1,8 +1,7 @@
 {
   "name": "flood-sdk",
   "description": "Typescript SDK for interacting with the Flood protocol",
-  "version": "0.0.2-alpha.3",
-  "type": "module",
+  "version": "0.0.3",
   "author": "Flood",
   "main": "./_cjs/index.js",
   "module": "./_esm/index.js",
@@ -55,7 +54,13 @@
     "routing",
     "web3"
   ],
-  "dependencies": {
-    "viem": "^1.16.6"
+  "peerDependencies": {
+    "viem": "^1.16.6",
+    "typescript": ">=5.0.4"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
   }
 }

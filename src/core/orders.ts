@@ -5,17 +5,20 @@ import {
 	type FulfilledOrder,
 	type NewOrder,
 	type OrderWithStatus,
-	CancelReason
+	CancelReason,
+	type Item
 } from "../types/order.js"
 import { observe } from "./utils.js"
 import type { AtLeastOne } from "../types/index.js"
 import { Stream } from "./stream.js"
+import type { Address } from "viem"
+
 
 type OrderAPIStatus =
 	| "invalid-nonce"
 	| "insufficient-balance"
 	| "cancelled"
-	| "new"
+	| "valid"
 	| "fulfilled"
 	| "cancelled"
 type OrderAPIResponse = {
@@ -23,10 +26,8 @@ type OrderAPIResponse = {
 	status: OrderAPIStatus
 	offerer: `0x${string}`
 	zone: `0x${string}`
-	consideration_tokens: [`0x${string}`]
-	consideration_amounts: [string]
-	offer_tokens: [`0x${string}`]
-	offer_amounts: [string]
+	consideration: {token: `0x${string}`, amount: string}[]
+	offer: {token: `0x${string}`, amount: string}[] 
 	nonce: string
 	deadline: string
 	signature: `0x${string}`
@@ -42,31 +43,31 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 		offerer,
 		zone,
 		status,
-		consideration_tokens,
-		consideration_amounts,
-		offer_tokens,
-		offer_amounts,
+		offer: offerAPI,
+		consideration: considerationAPI,	
 		nonce,
 		deadline,
 		signature
 	} = order
-	const consideration = consideration_tokens.map((token, i) => ({
-		token,
-		amount: BigInt(consideration_amounts[i])
-	}))
-	const offer = offer_tokens.map((token, i) => ({
-		token,
-		amount: BigInt(offer_amounts[i])
-	}))
+
+	const consideration: Item[] = considerationAPI.map(item => ({
+		token: item.token,
+		amount: BigInt(item.amount)
+	}));
+	const offer: Item[] = offerAPI.map(item => ({
+		token: item.token,
+		amount: BigInt(item.amount)
+	}));
+
 	switch (status) {
-		case "new":
+		case "valid":
 			return {
 				hash,
 				signature,
 				zone,
 				offerer,
-				consideration,
 				offer,
+				consideration,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
 				status: OrderStatus.NEW
@@ -129,13 +130,20 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 	}
 }
 
+export type GetOrdersParameters = {
+	/** Address of who created the order */
+	offerer: Address
+}
+
+export type GetOrdersReturnType = OrderWithStatus[]
+
 /**
  *
  * @description
  * Fetches all orders for a given offerer.
  *
  * @param chain - {@link FloodChain} The chain to fetch orders from.
- * @param offerer - The address of the offerer listed in the orders.
+ * @param params - {@link GetOrdersParameters} The address of the offerer listed in the orders.
  *
  * @example
  * import {arbitrum} from "flood-sdk/arbitrum";
@@ -146,8 +154,8 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
  */
 export async function getOrders(
 	chain: FloodChain,
-	offerer: `0x${string}`
-): Promise<OrderWithStatus[]> {
+	{offerer}: GetOrdersParameters
+): Promise<GetOrdersReturnType> {
 	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
 
 	const response = await fetch(url, {
@@ -172,6 +180,7 @@ type OnCancelledOrder = (order: CancelledOrder) => void
 type OnError = (error: Error) => void
 
 export type WatchOrdersParameters = {
+	offerer: `0x${string}`,
 	onError?: OnError
 } & AtLeastOne<{
 	onOrder: OnOrder
@@ -180,13 +189,14 @@ export type WatchOrdersParameters = {
 	onCancelled: OnCancelledOrder
 }>
 
+export type WatchOrdersReturnType = () => void
+
 /**
  *
  * @description
  * Watches all orders by an offerer.
  *
  * @param chain - {@link FloodChain} The chain to watch orders on.
- * @param offerer - The address of the offerer listed in the orders.
  * @param params - {@link WatchOrdersParameters} At least one of `onOrder`, `onNew`, `onFulfilled`, `onCancelled` must be provided.
  *
  * @returns A function to call to stop watching orders.
@@ -206,16 +216,15 @@ export type WatchOrdersParameters = {
  */
 export async function watchOrders(
 	chain: FloodChain,
-	offerer: `0x${string}`,
-	{ onOrder, onNew, onFulfilled, onCancelled, onError }: WatchOrdersParameters
-): Promise<() => void> {
+	{ offerer, onOrder, onNew, onFulfilled, onCancelled, onError }: WatchOrdersParameters
+): Promise<WatchOrdersReturnType> {
 	return observe(
 		`watchOrders-${offerer}`,
 		{ onOrder, onNew, onFulfilled, onCancelled, onError },
 		async (emit) => {
 			const controller = new AbortController()
 			const response = await fetch(
-				`${chain.floodUrl}/orders/stream?offerer=${offerer}`,
+				`${chain.floodUrl}/orders/stream?address=${offerer.toLowerCase()}`,
 				{
 					method: "GET",
 					headers: {
@@ -225,6 +234,9 @@ export async function watchOrders(
 					signal: controller.signal
 				}
 			)
+			if (!response.ok) {
+				throw new Error(`${response.status} ${response.statusText}`)
+			}
 			const stream = Stream.fromSSEResponse<OrderAPIResponse>(
 				response,
 				controller

@@ -23,3 +23,6 @@ export const permit2WitnessTypes = {
 		{ name: "nonce", type: "uint256" }
 	]
 } as const
+
+export const NewOrderPrimaryType = "PermitBatchWitnessTransferFrom" as const
+export const CancelOrderPrimaryType = "Order" as const

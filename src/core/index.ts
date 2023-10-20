@@ -1,5 +1,5 @@
 export { cancelOrder, cancelOrderHash } from "./cancel.js"
 export { newOrder, orderHash, submitOrder } from "./new.js"
-export { permit2Domain } from "./permit2.js"
+export { permit2Domain, nextNonce, permit2DomainSeparator } from "./permit2.js"
 export { quote } from "./quote.js"
 export { getOrders, watchOrders } from "./orders.js"

@@ -2,7 +2,10 @@ import { hashTypedData } from "viem/utils"
 import type { FloodChain } from "../types/floodChain.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
-import { permit2WitnessTypes } from "../constants/types.js"
+import {
+	permit2WitnessTypes,
+	CancelOrderPrimaryType
+} from "../constants/types.js"
 
 /**
  * @description
@@ -17,7 +20,7 @@ export function cancelOrderHash(
 	return hashTypedData({
 		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
-		primaryType: "Order",
+		primaryType: CancelOrderPrimaryType,
 		message: order
 	})
 }
@@ -64,7 +67,7 @@ export async function cancelOrder(
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({
-			order,
+			...order,
 			signature
 		})
 	})
