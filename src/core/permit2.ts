@@ -1,8 +1,13 @@
-import { readContract } from "viem/contract"
-import { domainSeparator } from "viem"
-import type { Client, Address, Hash, TypedDataDomain } from "viem"
+import {
+	domainSeparator,
+	encodeFunctionData,
+	createPublicClient,
+	http
+} from "viem"
+import type { Address, Hash, TypedDataDomain, CallParameters } from "viem"
 import type { FloodChain } from "../types/floodChain.js"
-import type { Order, Item } from "../types/order.js"
+import type { Order } from "../types/order.js"
+import type { Permit } from "../types/permit.js"
 import { permit2NonceFinderAbi } from "../constants/abi.js"
 import { permit2NonceFinderAddress } from "../constants/address.js"
 
@@ -28,43 +33,44 @@ export function permit2DomainSeparator(chain: FloodChain): Hash {
 
 export type NextNonceParameters = {
 	offerer: Address
-	/** The last signed nonce which hasn't been spent yet. */
-	lastPendingNonce?: bigint
+	/** An offset to start looking for the next nonce. This is useful if you have signed another order, but it has not been fulfilled yet.*/
+	offset?: bigint
 }
 
 /**
- *
- * @param client Client to use for the call
+ * @description
+ * Encodes a call to fetch the next available nonce after an offset (defaults to 0)
  * @param params {@link NextNonceParameters}
- * @returns The next unsigned and unspent nonce.
+ * @returns callParams - The calldata and `to` field to use for an eth_call returning the next nonce.
+ *
+ * @example
+ *
+ * import { nextNonceCall } from "flood-sdk"
+ *
+ * const client = createPublicClient();
+ * const nextNonce = await client.call(nextNonceCall({offerer: "0x...", offset: 2n}))
  */
-export async function nextNonce(
-	client: Client,
-	{ offerer, lastPendingNonce = 0n }: NextNonceParameters
-): Promise<bigint> {
-	const nonce = await readContract(client, {
-		abi: permit2NonceFinderAbi,
-		address: permit2NonceFinderAddress,
-		functionName: "nextNonceAfter",
-		args: [offerer, lastPendingNonce]
-	})
-	return nonce
+export function nextNonceCall({
+	offerer,
+	offset = 0n
+}: NextNonceParameters): CallParameters {
+	return {
+		data: encodeFunctionData({
+			abi: permit2NonceFinderAbi,
+			functionName: "nextNonceAfter",
+			args: [offerer, offset]
+		}),
+		to: permit2NonceFinderAddress
+	}
 }
 
-type Permit = {
-	permitted: Item[]
-	spender: Address
-	nonce: bigint
-	deadline: bigint
-	witness: Order
-}
 /**
  *
  * @param chain {@link FloodChain}
  * @param order The order to create the permit from
  * @returns A permit struct, using the same deadline and nonce as the order passed in, and giving permission to the Flood book to transfer the offer items.
  */
-export function permitFromOrder(chain: FloodChain, order: Order): Permit {
+export function intoPermit(chain: FloodChain, order: Order): Permit {
 	return {
 		permitted: order.offer,
 		spender: chain.contracts.book.address,

@@ -1,6 +1,13 @@
+import {
+	type CallParameters,
+	type Address,
+	type Hash,
+	encodeFunctionData
+} from "viem"
 import type { FloodChain } from "../types/floodChain.js"
 import {
 	OrderStatus,
+	type Order,
 	type CancelledOrder,
 	type FulfilledOrder,
 	type NewOrder,
@@ -8,11 +15,10 @@ import {
 	CancelReason,
 	type Item
 } from "../types/order.js"
-import { observe } from "./utils.js"
 import type { AtLeastOne } from "../types/index.js"
+import { bookAbi } from "../constants/abi.js"
+import { observe } from "./utils.js"
 import { Stream } from "./stream.js"
-import type { Address } from "viem"
-
 
 type OrderAPIStatus =
 	| "invalid-nonce"
@@ -22,12 +28,12 @@ type OrderAPIStatus =
 	| "fulfilled"
 	| "cancelled"
 type OrderAPIResponse = {
-	hash: `0x${string}`
+	hash: Hash
 	status: OrderAPIStatus
-	offerer: `0x${string}`
-	zone: `0x${string}`
-	consideration: {token: `0x${string}`, amount: string}[]
-	offer: {token: `0x${string}`, amount: string}[] 
+	offerer: Address
+	zone: Address
+	consideration: { token: Address; amount: string }[]
+	offer: { token: Address; amount: string }[]
 	nonce: string
 	deadline: string
 	signature: `0x${string}`
@@ -44,20 +50,20 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 		zone,
 		status,
 		offer: offerAPI,
-		consideration: considerationAPI,	
+		consideration: considerationAPI,
 		nonce,
 		deadline,
 		signature
 	} = order
 
-	const consideration: Item[] = considerationAPI.map(item => ({
+	const consideration: Item[] = considerationAPI.map((item) => ({
 		token: item.token,
 		amount: BigInt(item.amount)
-	}));
-	const offer: Item[] = offerAPI.map(item => ({
+	}))
+	const offer: Item[] = offerAPI.map((item) => ({
 		token: item.token,
 		amount: BigInt(item.amount)
-	}));
+	}))
 
 	switch (status) {
 		case "valid":
@@ -154,7 +160,7 @@ export type GetOrdersReturnType = OrderWithStatus[]
  */
 export async function getOrders(
 	chain: FloodChain,
-	{offerer}: GetOrdersParameters
+	{ offerer }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
 	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
 
@@ -180,7 +186,7 @@ type OnCancelledOrder = (order: CancelledOrder) => void
 type OnError = (error: Error) => void
 
 export type WatchOrdersParameters = {
-	offerer: `0x${string}`,
+	offerer: `0x${string}`
 	onError?: OnError
 } & AtLeastOne<{
 	onOrder: OnOrder
@@ -216,7 +222,14 @@ export type WatchOrdersReturnType = () => void
  */
 export async function watchOrders(
 	chain: FloodChain,
-	{ offerer, onOrder, onNew, onFulfilled, onCancelled, onError }: WatchOrdersParameters
+	{
+		offerer,
+		onOrder,
+		onNew,
+		onFulfilled,
+		onCancelled,
+		onError
+	}: WatchOrdersParameters
 ): Promise<WatchOrdersReturnType> {
 	return observe(
 		`watchOrders-${offerer}`,
@@ -265,4 +278,31 @@ export async function watchOrders(
 			}
 		}
 	)
+}
+
+/**
+ * @description
+ * Generates eth_call params to verify if an order adheres to the trading rules of the order zone, if the nonce is unspent, and if the deadline has not been exceeded.
+ * @param order {@link Order}
+ * @return Ethereum call parameters to validate an order.
+ *
+ * @example
+ *
+ * import { isOrderValidCall } from "flood-sdk"
+ *
+ * const client = createPublicClient();
+ * const isValid = await client.call(isValidOrder(arbitrum, { order }))
+ */
+export function isValidOrderCall(
+	chain: FloodChain,
+	order: Order
+): CallParameters {
+	return {
+		to: chain.contracts.book.address,
+		data: encodeFunctionData({
+			abi: bookAbi,
+			functionName: "getOrderStatus",
+			args: [order]
+		})
+	}
 }

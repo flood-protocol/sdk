@@ -24,5 +24,7 @@ export const permit2WitnessTypes = {
 	]
 } as const
 
-export const NewOrderPrimaryType = "PermitBatchWitnessTransferFrom" as const
-export const CancelOrderPrimaryType = "Order" as const
+export enum PrimaryType {
+	NEW = "PermitBatchWitnessTransferFrom",
+	CANCEL = "Order"
+}

@@ -1,4 +1,4 @@
-import { hashTypedData } from "viem/utils"
+import { type CallParameters, hashTypedData, encodeFunctionData } from "viem"
 import type { FloodChain } from "../types/floodChain.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
@@ -6,6 +6,7 @@ import {
 	permit2WitnessTypes,
 	CancelOrderPrimaryType
 } from "../constants/types.js"
+import { permit2Abi } from "../constants/abi.js"
 
 /**
  * @description
@@ -75,4 +76,93 @@ export async function cancelOrder(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
+}
+
+type DeleteOrdersReturnType<T> = T extends Order
+	? CallParameters
+	: T extends Order[]
+	? CallParameters[]
+	: never
+
+/**
+ * Generates transaction parameters to invalidate an order nonce, rendering it unfillable.
+ * Use {@link cancelOrder} for most cases. This function is for trustless nonce invalidation.
+ *
+ * @param chain - {@link FloodChain}
+ * @param order - {@link Order}
+ *
+ * @returns Transaction parameters.
+ *
+ * @example
+ * import { arbitrum } from "flood-sdk/chains";
+ * const order = {
+ * 	// some order...
+ * }
+ * walletClient.sendTransaction(deleteOrderTransaction(arbitrum, order))
+ */
+export function deleteOrderTransaction(
+	chain: FloodChain,
+	order: Order
+): DeleteOrdersReturnType<Order> {
+	const nonce = order.nonce
+	const word = nonce >> 8n
+	const pos = nonce & 0xffn
+	const mask = 1n << pos
+	return {
+		to: chain.contracts.permit2.address,
+		data: encodeFunctionData({
+			abi: permit2Abi,
+			functionName: "invalidateUnorderedNonces",
+			args: [word, mask]
+		})
+	}
+}
+
+/**
+ * @description
+ * Generates transaction parameters to invalidate multiple order nonces simultaneously, rendering them unfillable.
+ * This function groups all orders with nonces in the same word into a single transaction, optimizing gas usage when deleting multiple orders.
+ *
+ * @param chain - {@link FloodChain}
+ * @param orders - Array of {@link Order}
+ *
+ * @returns An array of transaction parameters.
+ *
+ * @example
+ * import { arbitrum } from "flood-sdk/chains";
+ * const orders = [
+ * 	// array of orders...
+ * ]
+ * walletClient.sendTransaction(deleteOrdersTransaction(arbitrum, orders))
+ */
+export function deleteOrdersTransaction(
+	chain: FloodChain,
+	orders: Order[]
+): DeleteOrdersReturnType<Order[]> {
+	const calls: CallParameters[] = []
+	const masks = new Map<bigint, bigint>()
+
+	// For each orders, finds which word it uses and XORs the invalidation mask with the existing one for that word.
+	for (const order of orders) {
+		const nonce = order.nonce
+		const word = nonce >> 8n
+		const pos = nonce & 0xffn
+		const mask = 1n << pos
+
+		// Update the mask for each word
+		masks.set(word, mask | (masks.get(word) ?? 0n))
+	}
+
+	for (const wordsAndMask of masks) {
+		calls.push({
+			to: chain.contracts.permit2.address,
+			data: encodeFunctionData({
+				abi: permit2Abi,
+				functionName: "invalidateUnorderedNonces",
+				args: wordsAndMask
+			})
+		})
+	}
+
+	return calls
 }

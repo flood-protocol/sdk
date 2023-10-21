@@ -7,6 +7,5 @@ export {
 } from "./address.js"
 export {
 	permit2WitnessTypes,
-	NewOrderPrimaryType,
-	CancelOrderPrimaryType
+	PrimaryType
 } from "./types.js"

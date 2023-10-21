@@ -1,42 +1,42 @@
 export {
+	quote,
+	type QuoteParameters,
+	getOrders,
+	watchOrders,
+	type WatchOrdersParameters,
+	isValidOrderCall,
 	submitOrder,
+	etchOrderTransaction,
 	orderHash,
 	newOrder,
 	type SubmitOrderParameters,
-	type NewOrderParameters
-} from "./core/new.js"
-export {
+	type NewOrderParameters,
 	cancelOrder,
 	cancelOrderHash,
-	type CancelOrderParameters
-} from "./core/cancel.js"
-export {
-	quote,
-	type QuoteParameters
-} from "./core/quote.js"
-export {
-	getOrders,
-	watchOrders,
-	type WatchOrdersParameters
-} from "./core/orders.js"
-export {
+	deleteOrderTransaction,
+	deleteOrdersTransaction,
+	type CancelOrderParameters,
 	permit2Domain,
-	nextNonce,
+	type NextNonceCallParameters
+	nextNonceCall,
 	permit2DomainSeparator,
-	permitFromOrder
-} from "./core/permit2.js"
-export type { NextNonceParameters } from "./core/permit2.js"
+	intoPermit
+} from "./core/index.js"
+
 export type {
 	Order,
-	OrderStatus,
-	OrderWithStatus
-} from "./types/order.js"
+	OrderWithStatus,
+	FulfilledOrder,
+	CancelledOrder,
+	NewOrder,
+	Permit
+} from "./types/index.js"
+export { OrderStatus, CancelReason } from "./types/index.js"
 export {
 	permit2NonceFinderAddress,
 	permit2NonceFinderAbi,
 	permit2WitnessTypes,
-	NewOrderPrimaryType,
-	CancelOrderPrimaryType,
+	PrimaryType,
 	permit2Abi,
 	permit2Address,
 	bookAbi,
