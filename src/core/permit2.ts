@@ -1,8 +1,6 @@
 import {
 	domainSeparator,
-	encodeFunctionData,
-	createPublicClient,
-	http
+	encodeFunctionData
 } from "viem"
 import type { Address, Hash, TypedDataDomain, CallParameters } from "viem"
 import type { FloodChain } from "../types/floodChain.js"
@@ -31,7 +29,7 @@ export function permit2DomainSeparator(chain: FloodChain): Hash {
 	return domainSeparator({ domain: permit2Domain(chain) })
 }
 
-export type NextNonceParameters = {
+export type NextNonceCallParameters = {
 	offerer: Address
 	/** An offset to start looking for the next nonce. This is useful if you have signed another order, but it has not been fulfilled yet.*/
 	offset?: bigint
@@ -53,7 +51,7 @@ export type NextNonceParameters = {
 export function nextNonceCall({
 	offerer,
 	offset = 0n
-}: NextNonceParameters): CallParameters {
+}: NextNonceCallParameters): CallParameters {
 	return {
 		data: encodeFunctionData({
 			abi: permit2NonceFinderAbi,

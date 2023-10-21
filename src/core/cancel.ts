@@ -4,7 +4,7 @@ import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import {
 	permit2WitnessTypes,
-	CancelOrderPrimaryType
+	PrimaryType,	
 } from "../constants/types.js"
 import { permit2Abi } from "../constants/abi.js"
 
@@ -21,7 +21,7 @@ export function cancelOrderHash(
 	return hashTypedData({
 		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
-		primaryType: CancelOrderPrimaryType,
+		primaryType: PrimaryType.CANCEL,
 		message: order
 	})
 }

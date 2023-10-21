@@ -17,7 +17,7 @@ export {
 	deleteOrdersTransaction,
 	type CancelOrderParameters,
 	permit2Domain,
-	type NextNonceCallParameters
+	type NextNonceCallParameters,
 	nextNonceCall,
 	permit2DomainSeparator,
 	intoPermit
@@ -31,7 +31,8 @@ export type {
 	NewOrder,
 	Permit
 } from "./types/index.js"
-export { OrderStatus, CancelReason } from "./types/index.js"
+export {OrderStatus, CancelReason} from "./types/order.js"
+
 export {
 	permit2NonceFinderAddress,
 	permit2NonceFinderAbi,

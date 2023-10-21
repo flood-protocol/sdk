@@ -1,6 +1,5 @@
-import { hashTypedData, stringify } from "viem/utils"
-import { maxUint256, encodeFunctionData, type CallParameters } from "viem"
-import { permit2WitnessTypes, NewOrderPrimaryType } from "../constants/types.js"
+import { hashTypedData, stringify, maxUint256, encodeFunctionData, type CallParameters, type Address, type Hash } from "viem"
+import { permit2WitnessTypes, PrimaryType} from "../constants/types.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import type { FloodChain } from "../types/floodChain.js"
@@ -56,7 +55,7 @@ export function newOrder(
 		offerer,
 		zone,
 		offer: Object.entries(tokensIn).map(([token, amount]) => ({
-			token: token as `0x${string}`,
+			token: token as Address,
 			amount
 		})),
 		consideration: [{ token: tokenOut, amount: minAmountOut }],
@@ -90,7 +89,7 @@ export function newOrder(
  * })
  * const orderHash = orderHash(arbitrum, order)
  */
-export function orderHash(chain: FloodChain, order: Order): `0x${string}` {
+export function orderHash(chain: FloodChain, order: Order): Hash {
 	const permit = {
 		permitted: order.offer,
 		spender: chain.contracts.book.address,
@@ -101,7 +100,7 @@ export function orderHash(chain: FloodChain, order: Order): `0x${string}` {
 	return hashTypedData({
 		domain: permit2Domain(chain),
 		types: permit2WitnessTypes,
-		primaryType: NewOrderPrimaryType,
+		primaryType: PrimaryType.NEW,
 		message: permit
 	})
 }

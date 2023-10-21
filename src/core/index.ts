@@ -1,5 +1,6 @@
 export {
 	cancelOrder,
+	type CancelOrderParameters,
 	cancelOrderHash,
 	deleteOrderTransaction,
 	deleteOrdersTransaction
@@ -17,7 +18,7 @@ export {
 	nextNonceCall,
 	permit2DomainSeparator,
 	intoPermit,
-	type NextNonceParameters
+	type NextNonceCallParameters
 } from "./permit2.js"
-export { quote } from "./quote.js"
-export { getOrders, watchOrders, isValidOrderCall } from "./orders.js"
+export { quote, type QuoteParameters } from "./quote.js"
+export { getOrders, type GetOrdersParameters,  watchOrders, type WatchOrdersParameters, isValidOrderCall } from "./orders.js"
