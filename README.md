@@ -1,4 +1,4 @@
-# flood-sdk
+# Flood SDK
 
 This SDK offers a collection of robustly typed core functions for interfacing with the Flood protocol. It is designed to accommodate the most frequently encountered use-cases when utilizing the protocol.
 
@@ -6,24 +6,24 @@ The library is in active development and in its infancy, so don't consider it st
 
 In development:
 
-- Support for Deleting Orders onchain
-- Support for onchain trading.
-- Comphrensive examples.
+- [ ] Support for invalidating Permit2 nonces
+- [ ] Support for onchain trading
+- [ ] Comprehensive examples
 
 ## Getting started
 
 To install run:
 
-```sh
-npm install flood-sdk
+```
+npm install flood-sdk viem
 ```
 
-```sh
-yarn install flood-sdk
+```
+yarn install flood-sdk viem
 ```
 
-```sh
-bun add flood-sdk
+```
+bun add flood-sdk viem
 ```
 
 ## Getting quotes
