@@ -6,8 +6,8 @@ The library is in active development and in its infancy, so don't consider it st
 
 In development:
 
-- [ ] Support for invalidating Permit2 nonces
-- [ ] Support for onchain trading
+- [x] Support for invalidating Permit2 nonces
+- [x] Support for onchain trading
 - [ ] Comprehensive examples
 
 ## Getting started
