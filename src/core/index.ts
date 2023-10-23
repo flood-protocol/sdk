@@ -22,3 +22,4 @@ export {
 } from "./permit2.js"
 export { quote, type QuoteParameters } from "./quote.js"
 export { getOrders, type GetOrdersParameters,  watchOrders, type WatchOrdersParameters, isValidOrderCall } from "./orders.js"
+export {getTokens, type GetTokensReturnType} from "./tokens.js"

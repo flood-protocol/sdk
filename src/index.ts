@@ -20,7 +20,9 @@ export {
 	type NextNonceCallParameters,
 	nextNonceCall,
 	permit2DomainSeparator,
-	intoPermit
+	intoPermit,
+	getTokens,
+	GetTokensReturnType
 } from "./core/index.js"
 
 export type {

@@ -26,6 +26,17 @@ yarn install flood-sdk viem
 bun add flood-sdk viem
 ```
 
+## Fetching supported tokens
+
+To fetch all the tokens supported by the Flood Fulfiller, run:
+
+```javascript
+import { arbitrum } from "flood-sdk/chains";
+import { getTokens } from "flood-sdk";
+
+const tokens: Address[] = await getTokens(arbitrum);
+```
+
 ## Getting quotes
 
 To get a quote for a basket of tokens:
