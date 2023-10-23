@@ -22,7 +22,7 @@ export {
 	permit2DomainSeparator,
 	intoPermit,
 	getTokens,
-	GetTokensReturnType
+	type GetTokensReturnType
 } from "./core/index.js"
 
 export type {
