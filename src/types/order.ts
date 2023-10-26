@@ -27,12 +27,19 @@ type OrderWithSignatureAndHash = Order & {
 
 export type NewOrder = OrderWithSignatureAndHash & {
 	status: OrderStatus.NEW
+	createdAt: Date
 }
 
 export type FulfilledOrder = OrderWithSignatureAndHash & {
 	status: OrderStatus.FULFILLED
-	txHash: `0x${string}`
+	blockHash: `0x${string}`
+	blockNumber: bigint
+	logIndex: number
+	transactionHash: `0x${string}`
+	transactionIndex: number
 	amountOut: bigint
+	createdAt: Date
+	fulfilledAt: Date
 }
 
 export enum CancelReason {
@@ -47,6 +54,8 @@ export enum CancelReason {
 export type CancelledOrder = OrderWithSignatureAndHash & {
 	status: OrderStatus.CANCELLED
 	cause: CancelReason
+	createdAt: Date
+	cancelledAt: Date
 }
 
 export type OrderWithStatus = NewOrder | FulfilledOrder | CancelledOrder

@@ -20,16 +20,8 @@ import { bookAbi } from "../constants/abi.js"
 import { observe } from "./utils.js"
 import { Stream } from "./stream.js"
 
-type OrderAPIStatus =
-	| "invalid-nonce"
-	| "insufficient-balance"
-	| "cancelled"
-	| "valid"
-	| "fulfilled"
-	| "cancelled"
-type OrderAPIResponse = {
+type OrderAPIBase = {
 	hash: Hash
-	status: OrderAPIStatus
 	offerer: Address
 	zone: Address
 	consideration: { token: Address; amount: string }[]
@@ -37,13 +29,52 @@ type OrderAPIResponse = {
 	nonce: string
 	deadline: string
 	signature: `0x${string}`
+	created_at: string
 }
+
+type NewOrderAPI = OrderAPIBase & {
+	status: OrderStatus.NEW, 
+	status_metadata: {
+		state: "valid"
+		timestamp: number
+	}
+	fulfilled_at: null
+	cancelled_at: null
+}
+
+type FulfilledStatusMetadata = {
+	address: `0x${string}`
+	block_hash: `0x${string}`
+	block_number: number
+	log_index: number
+	transaction_hash: `0x${string}`
+	transaction_index: number
+	timestamp: number
+	state: "fulfilled"
+}
+type FulfilledOrderAPI = OrderAPIBase & {
+	status: OrderStatus.FULFILLED, 
+	status_metadata: FulfilledStatusMetadata
+	fulfilled_at: string
+	cancelled_at: null
+}
+
+type CancelledOrderAPI = OrderAPIBase & {
+	status: OrderStatus.CANCELLED, 
+	status_metadata: {
+		state: "canceled" | "invalid_nonce" | "insufficient_balance"
+	}
+	fulfilled_at: null
+	cancelled_at: string
+}
+
+type OrderAPI = NewOrderAPI | FulfilledOrderAPI | CancelledOrderAPI
 
 /**
  * Convers an order from the Flood API to an {@link OrderWithStatus}.
  * @param order An order from the Flood API.
  */
-function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
+function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 	const {
 		hash,
 		offerer,
@@ -53,7 +84,8 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 		consideration: considerationAPI,
 		nonce,
 		deadline,
-		signature
+		signature,
+		created_at
 	} = order
 
 	const consideration: Item[] = considerationAPI.map((item) => ({
@@ -66,7 +98,7 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 	}))
 
 	switch (status) {
-		case "valid":
+		case OrderStatus.NEW:
 			return {
 				hash,
 				signature,
@@ -76,9 +108,10 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 				consideration,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status: OrderStatus.NEW
+				status,
+				createdAt: new Date(created_at)
 			}
-		case "fulfilled":
+		case OrderStatus.FULFILLED:
 			return {
 				hash,
 				signature,
@@ -88,24 +121,23 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status: OrderStatus.FULFILLED,
-				txHash: "0x",
-				amountOut: 0n
+				status,
+				transactionHash: order.status_metadata.transaction_hash,
+				blockHash: order.status_metadata.block_hash,
+				blockNumber: BigInt(order.status_metadata.block_number),
+				transactionIndex: order.status_metadata.transaction_index,
+				logIndex: order.status_metadata.log_index,
+				amountOut: 0n,
+				createdAt: new Date(created_at),
+				fulfilledAt: new Date(order.fulfilled_at)
 			}
-		case "cancelled":
-			return {
-				hash,
-				signature,
-				zone,
-				offerer,
-				consideration,
-				offer,
-				nonce: BigInt(nonce),
-				deadline: BigInt(deadline),
-				status: OrderStatus.CANCELLED,
-				cause: CancelReason.ACTION
+		case OrderStatus.CANCELLED:
+			let cause = CancelReason.ACTION;
+			if(order.status_metadata.state === "invalid_nonce") {
+				cause = CancelReason.INVALID_NONCE;
+			} else if(order.status_metadata.state === "insufficient_balance") {
+				cause = CancelReason.INSUFFICIENT_BALANCE;
 			}
-		case "invalid-nonce":
 			return {
 				hash,
 				signature,
@@ -115,21 +147,10 @@ function intoOrderWithStatus(order: OrderAPIResponse): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status: OrderStatus.CANCELLED,
-				cause: CancelReason.INVALID_NONCE
-			}
-		case "insufficient-balance":
-			return {
-				hash,
-				signature,
-				zone,
-				offerer,
-				consideration,
-				offer,
-				nonce: BigInt(nonce),
-				deadline: BigInt(deadline),
-				status: OrderStatus.CANCELLED,
-				cause: CancelReason.INSUFFICIENT_BALANCE
+				status,
+				cause, 
+				createdAt: new Date(created_at),
+				cancelledAt: new Date(order.cancelled_at)
 			}
 		default:
 			throw new Error(`Unknown order status: ${status}`)
@@ -174,7 +195,7 @@ export async function getOrders(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const orders = (await response.json()) as OrderAPIResponse[]
+	const orders = (await response.json()) as OrderAPI[]
 
 	return orders.map(intoOrderWithStatus)
 }
@@ -250,7 +271,7 @@ export async function watchOrders(
 			if (!response.ok) {
 				throw new Error(`${response.status} ${response.statusText}`)
 			}
-			const stream = Stream.fromSSEResponse<OrderAPIResponse>(
+			const stream = Stream.fromSSEResponse<OrderAPI>(
 				response,
 				controller
 			)
