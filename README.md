@@ -1,4 +1,6 @@
 # Flood SDK
+![image](https://github.com/flood-protocol/sdk/assets/29527327/7809fd0b-fdb8-4af8-800c-7e589fcd2e21)
+
 
 This SDK offers a collection of robustly typed core functions for interfacing with the Flood protocol. It is designed to accommodate the most frequently encountered use-cases when utilizing the protocol.
 
