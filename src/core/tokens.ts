@@ -1,5 +1,5 @@
-import type {Address} from "viem";
-import type {FloodChain} from "../types/floodChain.js";
+import type { Address } from "viem"
+import type { FloodChain } from "../types/floodChain.js"
 
 export type GetTokensReturnType = Address[]
 
@@ -30,7 +30,7 @@ export async function getTokens(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const {tokens} = (await response.json()) as {tokens: Address[]}
+	const { tokens } = (await response.json()) as { tokens: Address[] }
 
 	return tokens
 }

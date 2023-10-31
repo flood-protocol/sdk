@@ -1,7 +1,6 @@
-import type {Address} from "viem"
+import type { Address } from "viem"
 import { stringify } from "viem"
 import type { FloodChain } from "../types/floodChain.js"
-
 
 export type QuoteParameters = {
 	/** An object where each key-value pair is a token and the quantity of it to sell. */

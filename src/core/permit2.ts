@@ -1,7 +1,4 @@
-import {
-	domainSeparator,
-	encodeFunctionData
-} from "viem"
+import { domainSeparator, encodeFunctionData } from "viem"
 import type { Address, Hash, TypedDataDomain, CallParameters } from "viem"
 import type { FloodChain } from "../types/floodChain.js"
 import type { Order } from "../types/order.js"

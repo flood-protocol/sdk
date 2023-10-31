@@ -1,5 +1,13 @@
-import { hashTypedData, stringify, maxUint256, encodeFunctionData, type CallParameters, type Address, type Hash } from "viem"
-import { permit2WitnessTypes, PrimaryType} from "../constants/types.js"
+import {
+	hashTypedData,
+	stringify,
+	maxUint256,
+	encodeFunctionData,
+	type CallParameters,
+	type Address,
+	type Hash
+} from "viem"
+import { permit2WitnessTypes, PrimaryType } from "../constants/types.js"
 import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import type { FloodChain } from "../types/floodChain.js"

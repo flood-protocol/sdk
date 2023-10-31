@@ -33,7 +33,7 @@ type OrderAPIBase = {
 }
 
 type NewOrderAPI = OrderAPIBase & {
-	status: OrderStatus.NEW, 
+	status: "valid"
 	status_metadata: {
 		state: "valid"
 		timestamp: number
@@ -53,14 +53,14 @@ type FulfilledStatusMetadata = {
 	state: "fulfilled"
 }
 type FulfilledOrderAPI = OrderAPIBase & {
-	status: OrderStatus.FULFILLED, 
+	status: "fulfilled"
 	status_metadata: FulfilledStatusMetadata
 	fulfilled_at: string
 	cancelled_at: null
 }
 
 type CancelledOrderAPI = OrderAPIBase & {
-	status: OrderStatus.CANCELLED, 
+	status: "cancelled"
 	status_metadata: {
 		state: "canceled" | "invalid_nonce" | "insufficient_balance"
 	}
@@ -98,7 +98,7 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 	}))
 
 	switch (status) {
-		case OrderStatus.NEW:
+		case "valid":
 			return {
 				hash,
 				signature,
@@ -108,10 +108,10 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				consideration,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status,
+				status: OrderStatus.NEW,
 				createdAt: new Date(created_at)
 			}
-		case OrderStatus.FULFILLED:
+		case "fulfilled":
 			return {
 				hash,
 				signature,
@@ -121,7 +121,7 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status,
+				status: OrderStatus.FULFILLED,
 				transactionHash: order.status_metadata.transaction_hash,
 				blockHash: order.status_metadata.block_hash,
 				blockNumber: BigInt(order.status_metadata.block_number),
@@ -131,12 +131,12 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				createdAt: new Date(created_at),
 				fulfilledAt: new Date(order.fulfilled_at)
 			}
-		case OrderStatus.CANCELLED:
-			let cause = CancelReason.ACTION;
-			if(order.status_metadata.state === "invalid_nonce") {
-				cause = CancelReason.INVALID_NONCE;
-			} else if(order.status_metadata.state === "insufficient_balance") {
-				cause = CancelReason.INSUFFICIENT_BALANCE;
+		case "cancelled":
+			let cause = CancelReason.ACTION
+			if (order.status_metadata.state === "invalid_nonce") {
+				cause = CancelReason.INVALID_NONCE
+			} else if (order.status_metadata.state === "insufficient_balance") {
+				cause = CancelReason.INSUFFICIENT_BALANCE
 			}
 			return {
 				hash,
@@ -147,8 +147,8 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
-				status,
-				cause, 
+				status: OrderStatus.CANCELLED,
+				cause,
 				createdAt: new Date(created_at),
 				cancelledAt: new Date(order.cancelled_at)
 			}
@@ -271,10 +271,7 @@ export async function watchOrders(
 			if (!response.ok) {
 				throw new Error(`${response.status} ${response.statusText}`)
 			}
-			const stream = Stream.fromSSEResponse<OrderAPI>(
-				response,
-				controller
-			)
+			const stream = Stream.fromSSEResponse<OrderAPI>(response, controller)
 			for await (const orderFromAPI of stream) {
 				const order = intoOrderWithStatus(orderFromAPI)
 				if (emit.onOrder) {

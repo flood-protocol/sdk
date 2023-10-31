@@ -33,7 +33,7 @@ export type {
 	NewOrder,
 	Permit
 } from "./types/index.js"
-export {OrderStatus, CancelReason} from "./types/order.js"
+export { OrderStatus, CancelReason } from "./types/order.js"
 
 export {
 	permit2NonceFinderAddress,
