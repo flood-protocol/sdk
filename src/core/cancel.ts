@@ -66,7 +66,7 @@ export async function cancelOrder(
 			"Content-Type": "application/json"
 		},
 		body: stringify({
-			...order,
+			order,
 			signature
 		})
 	})
