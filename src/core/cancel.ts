@@ -4,6 +4,7 @@ import type { Order } from "../types/order.js"
 import { permit2Domain } from "./permit2.js"
 import { permit2WitnessTypes, PrimaryType } from "../constants/types.js"
 import { permit2Abi } from "../constants/abi.js"
+import {stringify} from "viem";
 
 /**
  * @description
@@ -64,7 +65,7 @@ export async function cancelOrder(
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({
+		body: stringify({
 			...order,
 			signature
 		})
