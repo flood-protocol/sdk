@@ -7,14 +7,14 @@ type UserAuthScope = {
 
 type ZoneAuthScope = {
 	type: "zone",
-	zone_address: Address,
+	zoneAddress: Address,
 }
 
 type AuthScope = UserAuthScope | ZoneAuthScope;
 
 export type GetAuthMessageParameters = {
 	scope: AuthScope,
-	signer_address: Address,
+	signerAddress: Address,
 };
 
 export type GetAuthMessageReturnType = String;
@@ -26,7 +26,7 @@ export type GetAuthMessageReturnType = String;
  *
  * @param chain - {@link FloodChain} The chain to authenticate for.
  * @param scope - {@link AuthScope} The authentication scope (with any required parameters).
- * @param signer_address - The signer address, representing the account requesting authentication.
+ * @param signerAddress - The signer address, representing the account requesting authentication.
  * @returns The structured plaintext message to sign with the EIP-191 signature scheme.
  *
  * @example
@@ -34,41 +34,56 @@ export type GetAuthMessageReturnType = String;
  *
  * const alice = "0x..."
  *
- * const user_auth_message = await getAuthMessage(arbitrum, {
+ * const userAuthMessage = await getAuthMessage(arbitrum, {
  * 	scope: {
  * 		type: "user"
  * 	},
- * 	signer_address: alice
+ * 	signerAddress: alice
  * });
  *
- * const zone_auth_message = await getAuthMessage(arbitrum, {
+ * const zoneAuthMessage = await getAuthMessage(arbitrum, {
  * 	scope: {
  * 		type: "zone",
- * 		zone_address: "0x..."
+ * 		zoneAddress: "0x..."
  * 	},
- * 	signer_address: alice
+ * 	signerAddress: alice
  * });
  */
 export async function getAuthMessage(
 	chain: FloodChain,
-	{ scope, signer_address }: GetAuthMessageParameters
+	{ scope, signerAddress }: GetAuthMessageParameters
 ): Promise<GetAuthMessageReturnType> {
 	const url = `${chain.floodUrl}/auth/message`
+
+	let scopeParam = (() => {
+		switch(scope.type) {
+			case "zone":
+				return {
+					type: "zone",
+					zone_address: scope.zoneAddress
+				}
+			default:
+				return scope
+		}
+	})();
 
 	const response = await fetch(url, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: stringify({ scope, signer_address }),
+		body: stringify({
+			scope: scopeParam,
+			signer_address: signerAddress
+		}),
 	});
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const auth_message = await response.text();
+	const authMessage = await response.text();
 
-	return auth_message;
+	return authMessage;
 }
 
 export type GetAuthTokenParameters = {
@@ -91,7 +106,7 @@ export type GetAuthTokenReturnType = String;
  * @example
  * import {arbitrum} from "flood-sdk/arbitrum";
  *
- * const auth_token = await getAuthToken(arbitrum, {
+ * const authToken = await getAuthToken(arbitrum, {
  * 	message: "flood.bid wants you to sign in with your Ethereum account:\n0x...",
  * 	signature: "0x..."
  * });
@@ -113,7 +128,7 @@ export async function getAuthToken(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const auth_token = await response.text();
+	const authToken = await response.text();
 
-	return auth_token;
+	return authToken;
 }
