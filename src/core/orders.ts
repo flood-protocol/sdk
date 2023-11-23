@@ -170,7 +170,7 @@ export type GetOrdersReturnType = OrderWithStatus[]
  * Fetches all orders for a given offerer.
  *
  * @param chain - {@link FloodChain} The chain to fetch orders from.
- * @param authToken - The JWT to authenticate this request.
+ * @param authToken - The JWT used for authentication.
  * @param offerer - {@link GetOrdersParameters} The address of the offerer listed in the orders.
  *
  * @example
@@ -228,7 +228,7 @@ export type WatchOrdersReturnType = () => void
  * Watches all orders by an offerer.
  *
  * @param chain - {@link FloodChain} The chain to watch orders on.
- * @param authToken - The JWT to authenticate this request.
+ * @param authToken - The JWT used for authentication.
  * @param offerer - {@link WatchOrdersParameters} The address of the offerer listed in the orders.
  * @param params - {@link WatchOrdersParameters} At least one of `onOrder`, `onNew`, `onFulfilled`, `onCancelled` must be provided.
  *
