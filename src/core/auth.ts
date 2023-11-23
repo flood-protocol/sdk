@@ -1,5 +1,5 @@
-import { Address, Hash, stringify } from "viem";
-import { FloodChain } from "../types";
+import { type Address, type Hash, stringify } from "viem";
+import { type FloodChain } from "../types";
 
 type UserAuthScope = {
 	type: "user",
