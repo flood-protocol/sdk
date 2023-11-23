@@ -5,4 +5,4 @@ export const permit2Address: `0x${string}` =
 export const bookAddress: `0x${string}` =
 	"0x00000000cf83d487A9cDfd8E8C121AF9f5ddE55B"
 export const defaultZoneAddress: `0x${string}` =
-	"0xf100d0988D6c9A02236A83d2E12e231226c814Ee"
+	"0xf100D5D3fF29EA0d0da33C8127F03Fc4A55E4088"

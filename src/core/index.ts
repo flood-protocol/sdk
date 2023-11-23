@@ -29,3 +29,9 @@ export {
 	isValidOrderCall
 } from "./orders.js"
 export { getTokens, type GetTokensReturnType } from "./tokens.js"
+export {
+	getAuthMessage,
+	type GetAuthMessageParameters,
+	getAuthToken,
+	type GetAuthTokenParameters,
+} from "./auth.js";

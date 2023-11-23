@@ -170,17 +170,20 @@ export type GetOrdersReturnType = OrderWithStatus[]
  * Fetches all orders for a given offerer.
  *
  * @param chain - {@link FloodChain} The chain to fetch orders from.
- * @param params - {@link GetOrdersParameters} The address of the offerer listed in the orders.
+ * @param authToken - The JWT used for authentication.
+ * @param offerer - {@link GetOrdersParameters} The address of the offerer listed in the orders.
  *
  * @example
  * import {arbitrum} from "flood-sdk/arbitrum";
  *
- * const alice = "0x..."
+ * const alice = "0x...";
+ * const authToken = "eyJ.."; // see getAuthToken
  *
- * const orders = await getOrders(arbitrum, alice);
+ * const orders = await getOrders(arbitrum, authToken, { offerer: alice });
  */
 export async function getOrders(
 	chain: FloodChain,
+	authToken: String,
 	{ offerer }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
 	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
@@ -188,6 +191,7 @@ export async function getOrders(
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {
+			"Authorization": `Bearer ${authToken}`,
 			"Content-Type": "application/json"
 		}
 	})
@@ -224,15 +228,19 @@ export type WatchOrdersReturnType = () => void
  * Watches all orders by an offerer.
  *
  * @param chain - {@link FloodChain} The chain to watch orders on.
+ * @param authToken - The JWT used for authentication.
+ * @param offerer - {@link WatchOrdersParameters} The address of the offerer listed in the orders.
  * @param params - {@link WatchOrdersParameters} At least one of `onOrder`, `onNew`, `onFulfilled`, `onCancelled` must be provided.
  *
  * @returns A function to call to stop watching orders.
  * @example
  * import {arbitrum} from "flood-sdk/arbitrum";
  *
- * const alice = "0x..."
+ * const alice = "0x...";
+ * const authToken = "eyJ.."; // see getAuthauthToken
  *
- * const updates = await watchOrders(arbitrum, alice, {
+ * const updates = await watchOrders(arbitrum, authToken, {
+ * 	offerer: alice,
  * 	onOrder: (order) => console.log(order),
  * 	onNew: (order) => console.log(order),
  * 	onFulfilled: (order) => console.log(order),
@@ -243,6 +251,7 @@ export type WatchOrdersReturnType = () => void
  */
 export async function watchOrders(
 	chain: FloodChain,
+	authToken: String,
 	{
 		offerer,
 		onOrder,
@@ -262,6 +271,7 @@ export async function watchOrders(
 				{
 					method: "GET",
 					headers: {
+						"Authorization": `Bearer ${authToken}`,
 						"Content-Type": "text/event-stream",
 						"Cache-Control": "no-store"
 					},
