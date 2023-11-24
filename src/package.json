@@ -1,7 +1,7 @@
 {
   "name": "flood-sdk",
   "description": "Typescript SDK for interacting with the Flood protocol",
-  "version": "0.0.14",
+  "version": "0.0.15-alpha.0",
   "author": "Flood",
   "main": "./_cjs/index.js",
   "module": "./_esm/index.js",
