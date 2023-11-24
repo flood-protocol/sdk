@@ -163,7 +163,7 @@ export async function getAuthToken(
 	return authToken;
 }
 
-export type AuthInfoReturnType = {
+export type GetAuthInfoReturnType = {
 	address: Address,
 	chain_id: number,
 };
@@ -185,7 +185,7 @@ export type AuthInfoReturnType = {
 export async function getAuthInfo(
 	chain: FloodChain,
 	authToken: String
-): Promise<AuthInfoReturnType> {
+): Promise<GetAuthInfoReturnType> {
 	const url = `${chain.floodUrl}/auth/info`
 
 	const response = await fetch(url, {
@@ -200,5 +200,5 @@ export async function getAuthInfo(
 	}
 	const authInfo = await response.json();
 
-	return authInfo as AuthInfoReturnType;
+	return authInfo as GetAuthInfoReturnType;
 }

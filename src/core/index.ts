@@ -30,8 +30,11 @@ export {
 } from "./orders.js"
 export { getTokens, type GetTokensReturnType } from "./tokens.js"
 export {
+	getAuthNonce,
 	getAuthMessage,
 	type GetAuthMessageParameters,
 	getAuthToken,
 	type GetAuthTokenParameters,
+	getAuthInfo,
+	type GetAuthInfoReturnType
 } from "./auth.js";
