@@ -1,6 +1,36 @@
 import { type Address, type Hash, stringify } from "viem";
 import { type FloodChain } from "../types";
 
+/**
+ *
+ * @description
+ * Fetches the current nonce for EIP-4361 Sign-In with Ethereum authentication.
+ *
+ * @param chain - {@link FloodChain} The chain to authenticate for.
+ * @returns The current SIWE nonce.
+ *
+ * @example
+ * import {arbitrum} from "flood-sdk/arbitrum";
+ *
+ * const nonce = await getAuthNonce(arbitrum);
+ */
+export async function getAuthNonce(
+	chain: FloodChain,
+): Promise<String> {
+	const url = `${chain.floodUrl}/auth/nonce`
+
+	const response = await fetch(url, {
+		method: "GET",
+	});
+
+	if (!response.ok) {
+		throw new Error(`${response.status} ${response.statusText}`)
+	}
+	const authNonce = await response.text();
+
+	return authNonce;
+}
+
 type UserAuthScope = {
 	type: "user",
 }
@@ -131,4 +161,44 @@ export async function getAuthToken(
 	const authToken = await response.text();
 
 	return authToken;
+}
+
+export type AuthInfoReturnType = {
+	address: Address,
+	chain_id: number,
+};
+
+/**
+ *
+ * @description
+ * Fetches authentication information from the provided JSON Web Token.
+ *
+ * @param chain - {@link FloodChain} The chain to authenticate for.
+ * @param authToken - The JWT used for authentication.
+ * @returns authentication information.
+ *
+ * @example
+ * import {arbitrum} from "flood-sdk/arbitrum";
+ *
+ * const authInfo = await getAuthInfo(arbitrum, authToken);
+ */
+export async function getAuthInfo(
+	chain: FloodChain,
+	authToken: String
+): Promise<AuthInfoReturnType> {
+	const url = `${chain.floodUrl}/auth/info`
+
+	const response = await fetch(url, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${authToken}`
+		}
+	});
+
+	if (!response.ok) {
+		throw new Error(`${response.status} ${response.statusText}`)
+	}
+	const authInfo = await response.json();
+
+	return authInfo as AuthInfoReturnType;
 }
