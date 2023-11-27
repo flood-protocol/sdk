@@ -183,7 +183,7 @@ export type GetOrdersReturnType = OrderWithStatus[]
  */
 export async function getOrders(
 	chain: FloodChain,
-	authToken: String,
+	authToken: string,
 	{ offerer }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
 	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
@@ -251,7 +251,7 @@ export type WatchOrdersReturnType = () => void
  */
 export async function watchOrders(
 	chain: FloodChain,
-	authToken: String,
+	authToken: string,
 	{
 		offerer,
 		onOrder,
