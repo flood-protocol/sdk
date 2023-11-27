@@ -16,7 +16,7 @@ import { type FloodChain } from "../types";
  */
 export async function getAuthNonce(
 	chain: FloodChain,
-): Promise<String> {
+): Promise<string> {
 	const url = `${chain.floodUrl}/auth/nonce`
 
 	const response = await fetch(url, {
@@ -47,7 +47,7 @@ export type GetAuthMessageParameters = {
 	signerAddress: Address,
 };
 
-export type GetAuthMessageReturnType = String;
+export type GetAuthMessageReturnType = string;
 
 /**
  *
@@ -117,11 +117,11 @@ export async function getAuthMessage(
 }
 
 export type GetAuthTokenParameters = {
-	message: String,
+	message: string,
 	signature: Hash,
 };
 
-export type GetAuthTokenReturnType = String;
+export type GetAuthTokenReturnType = string;
 
 /**
  *
@@ -184,7 +184,7 @@ export type GetAuthInfoReturnType = {
  */
 export async function getAuthInfo(
 	chain: FloodChain,
-	authToken: String
+	authToken: string
 ): Promise<GetAuthInfoReturnType> {
 	const url = `${chain.floodUrl}/auth/info`
 
