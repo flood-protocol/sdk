@@ -191,7 +191,7 @@ export async function getOrders(
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {
-			"Authorization": `Bearer ${authToken}`,
+			Authorization: `Bearer ${authToken}`,
 			"Content-Type": "application/json"
 		}
 	})
@@ -271,7 +271,7 @@ export async function watchOrders(
 				{
 					method: "GET",
 					headers: {
-						"Authorization": `Bearer ${authToken}`,
+						Authorization: `Bearer ${authToken}`,
 						"Content-Type": "text/event-stream",
 						"Cache-Control": "no-store"
 					},

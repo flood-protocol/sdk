@@ -1,5 +1,5 @@
-import { type Address, type Hash, stringify } from "viem";
-import { type FloodChain } from "../types";
+import { type Address, type Hash, stringify } from "viem"
+import { type FloodChain } from "../types"
 
 /**
  *
@@ -14,40 +14,38 @@ import { type FloodChain } from "../types";
  *
  * const nonce = await getAuthNonce(arbitrum);
  */
-export async function getAuthNonce(
-	chain: FloodChain,
-): Promise<string> {
+export async function getAuthNonce(chain: FloodChain): Promise<string> {
 	const url = `${chain.floodUrl}/auth/nonce`
 
 	const response = await fetch(url, {
-		method: "GET",
-	});
+		method: "GET"
+	})
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const authNonce = await response.text();
+	const authNonce = await response.text()
 
-	return authNonce;
+	return authNonce
 }
 
 export type UserAuthScope = {
-	type: "user",
+	type: "user"
 }
 
 export type ZoneAuthScope = {
-	type: "zone",
-	zoneAddress: Address,
+	type: "zone"
+	zoneAddress: Address
 }
 
-export type AuthScope = UserAuthScope | ZoneAuthScope;
+export type AuthScope = UserAuthScope | ZoneAuthScope
 
 export type GetAuthMessageParameters = {
-	scope: AuthScope,
-	signerAddress: Address,
-};
+	scope: AuthScope
+	signerAddress: Address
+}
 
-export type GetAuthMessageReturnType = string;
+export type GetAuthMessageReturnType = string
 
 /**
  *
@@ -86,7 +84,7 @@ export async function getAuthMessage(
 	const url = `${chain.floodUrl}/auth/message`
 
 	let scopeParam = (() => {
-		switch(scope.type) {
+		switch (scope.type) {
 			case "zone":
 				return {
 					type: "zone",
@@ -95,7 +93,7 @@ export async function getAuthMessage(
 			default:
 				return scope
 		}
-	})();
+	})()
 
 	const response = await fetch(url, {
 		method: "POST",
@@ -105,23 +103,23 @@ export async function getAuthMessage(
 		body: stringify({
 			scope: scopeParam,
 			signer_address: signerAddress
-		}),
-	});
+		})
+	})
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const authMessage = await response.text();
+	const authMessage = await response.text()
 
-	return authMessage;
+	return authMessage
 }
 
 export type GetAuthTokenParameters = {
-	message: string,
-	signature: Hash,
-};
+	message: string
+	signature: Hash
+}
 
-export type GetAuthTokenReturnType = string;
+export type GetAuthTokenReturnType = string
 
 /**
  *
@@ -152,21 +150,21 @@ export async function getAuthToken(
 		headers: {
 			"Content-Type": "application/json"
 		},
-		body: stringify({ message, signature }),
-	});
+		body: stringify({ message, signature })
+	})
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const authToken = await response.text();
+	const authToken = await response.text()
 
-	return authToken;
+	return authToken
 }
 
 export type GetAuthInfoReturnType = {
-	address: Address,
-	chain_id: number,
-};
+	address: Address
+	chain_id: number
+}
 
 /**
  *
@@ -191,14 +189,14 @@ export async function getAuthInfo(
 	const response = await fetch(url, {
 		method: "GET",
 		headers: {
-			"Authorization": `Bearer ${authToken}`
+			Authorization: `Bearer ${authToken}`
 		}
-	});
+	})
 
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const authInfo = await response.json();
+	const authInfo = await response.json()
 
-	return authInfo as GetAuthInfoReturnType;
+	return authInfo as GetAuthInfoReturnType
 }

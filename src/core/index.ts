@@ -33,9 +33,11 @@ export {
 	getAuthNonce,
 	getAuthMessage,
 	type GetAuthMessageParameters,
-	type AuthScope, type UserAuthScope, type ZoneAuthScope,
+	type AuthScope,
+	type UserAuthScope,
+	type ZoneAuthScope,
 	getAuthToken,
 	type GetAuthTokenParameters,
 	getAuthInfo,
 	type GetAuthInfoReturnType
-} from "./auth.js";
+} from "./auth.js"
