@@ -7,6 +7,7 @@ export {
 	isValidOrderCall,
 	getAuthNonce,
 	type GetAuthMessageParameters,
+	type AuthScope, type UserAuthScope, type ZoneAuthScope,
 	getAuthMessage,
 	type GetAuthTokenParameters,
 	getAuthToken,
