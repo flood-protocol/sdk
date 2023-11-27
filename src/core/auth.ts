@@ -31,16 +31,16 @@ export async function getAuthNonce(
 	return authNonce;
 }
 
-type UserAuthScope = {
+export type UserAuthScope = {
 	type: "user",
 }
 
-type ZoneAuthScope = {
+export type ZoneAuthScope = {
 	type: "zone",
 	zoneAddress: Address,
 }
 
-type AuthScope = UserAuthScope | ZoneAuthScope;
+export type AuthScope = UserAuthScope | ZoneAuthScope;
 
 export type GetAuthMessageParameters = {
 	scope: AuthScope,

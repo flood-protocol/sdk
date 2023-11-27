@@ -33,6 +33,7 @@ export {
 	getAuthNonce,
 	getAuthMessage,
 	type GetAuthMessageParameters,
+	type AuthScope, type UserAuthScope, type ZoneAuthScope,
 	getAuthToken,
 	type GetAuthTokenParameters,
 	getAuthInfo,
