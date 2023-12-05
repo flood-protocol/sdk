@@ -22,13 +22,16 @@ import { Stream } from "./stream.js"
 
 type OrderAPIBase = {
 	hash: Hash
+	signature: `0x${string}`
 	offerer: Address
 	zone: Address
 	consideration: { token: Address; amount: string }[]
 	offer: { token: Address; amount: string }[]
 	nonce: string
 	deadline: string
-	signature: `0x${string}`
+	recipient: Address
+	pre_hooks: { target: Address; data: `0x${string}` }
+	post_hooks: { target: Address; data: `0x${string}` }
 	created_at: string
 }
 
