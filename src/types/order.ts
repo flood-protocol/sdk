@@ -10,7 +10,7 @@ export type Order = {
 	offerer: `0x${string}`
 	zone: `0x${string}`
 	offer: Item[]
-	consideration: Item[]
+	consideration: Item
 	nonce: bigint
 	deadline: bigint
 	recipient: `0x${string}`

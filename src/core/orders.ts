@@ -25,7 +25,7 @@ type OrderAPIBase = {
 	signature: `0x${string}`
 	offerer: Address
 	zone: Address
-	consideration: { token: Address; amount: string }[]
+	consideration: { token: Address; amount: string }
 	offer: { token: Address; amount: string }[]
 	nonce: string
 	deadline: string
@@ -94,10 +94,10 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 		created_at
 	} = order
 
-	const consideration: Item[] = considerationAPI.map((item) => ({
-		token: item.token,
-		amount: BigInt(item.amount)
-	}))
+	const consideration: Item = {
+		token: considerationAPI.token,
+		amount: BigInt(considerationAPI.amount)
+	}
 	const offer: Item[] = offerAPI.map((item) => ({
 		token: item.token,
 		amount: BigInt(item.amount)
