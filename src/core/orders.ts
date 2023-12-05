@@ -30,8 +30,8 @@ type OrderAPIBase = {
 	nonce: string
 	deadline: string
 	recipient: Address
-	pre_hooks: { target: Address; data: `0x${string}` }
-	post_hooks: { target: Address; data: `0x${string}` }
+	pre_hooks: { target: Address; data: `0x${string}` }[]
+	post_hooks: { target: Address; data: `0x${string}` }[]
 	created_at: string
 }
 
