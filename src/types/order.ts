@@ -2,6 +2,10 @@ export type Item = {
 	token: `0x${string}`
 	amount: bigint
 }
+export type Hook = {
+	target: `0x${string}`
+	data: `0x${string}`
+}
 export type Order = {
 	offerer: `0x${string}`
 	zone: `0x${string}`
@@ -9,6 +13,9 @@ export type Order = {
 	consideration: Item[]
 	nonce: bigint
 	deadline: bigint
+	recipient: `0x${string}`
+	preHooks: Hook[]
+	postHooks: Hook[]
 }
 
 export enum OrderStatus {
