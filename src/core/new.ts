@@ -106,7 +106,7 @@ export function newOrder(
 export function orderHash(chain: FloodChain, order: Order): Hash {
   const permit = {
     permitted: order.offer,
-    spender: chain.contracts.book.address,
+    spender: chain.contracts.floodPlain.address,
     nonce: order.nonce,
     deadline: order.deadline,
     witness: order,
@@ -171,7 +171,7 @@ export function etchOrderTransaction(
   params: SubmitOrderParameters
 ): CallParameters {
   return {
-    to: chain.contracts.book.address,
+    to: chain.contracts.floodPlain.address,
     data: encodeFunctionData({
       abi: bookAbi,
       functionName: "etchOrder",

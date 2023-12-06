@@ -342,7 +342,7 @@ export function isValidOrderCall(
   order: Order
 ): CallParameters {
   return {
-    to: chain.contracts.book.address,
+    to: chain.contracts.floodPlain.address,
     data: encodeFunctionData({
       abi: bookAbi,
       functionName: "getOrderStatus",
