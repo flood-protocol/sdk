@@ -22,13 +22,16 @@ import { Stream } from "./stream.js"
 
 type OrderAPIBase = {
 	hash: Hash
+	signature: `0x${string}`
 	offerer: Address
 	zone: Address
-	consideration: { token: Address; amount: string }[]
+	consideration: { token: Address; amount: string }
 	offer: { token: Address; amount: string }[]
 	nonce: string
 	deadline: string
-	signature: `0x${string}`
+	recipient: Address
+	pre_hooks: { target: Address; data: `0x${string}` }[]
+	post_hooks: { target: Address; data: `0x${string}` }[]
 	created_at: string
 }
 
@@ -77,6 +80,7 @@ type OrderAPI = NewOrderAPI | FulfilledOrderAPI | CancelledOrderAPI
 function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 	const {
 		hash,
+		signature,
 		offerer,
 		zone,
 		status,
@@ -84,14 +88,16 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 		consideration: considerationAPI,
 		nonce,
 		deadline,
-		signature,
+		recipient,
+		pre_hooks,
+		post_hooks,
 		created_at
 	} = order
 
-	const consideration: Item[] = considerationAPI.map((item) => ({
-		token: item.token,
-		amount: BigInt(item.amount)
-	}))
+	const consideration: Item = {
+		token: considerationAPI.token,
+		amount: BigInt(considerationAPI.amount)
+	}
 	const offer: Item[] = offerAPI.map((item) => ({
 		token: item.token,
 		amount: BigInt(item.amount)
@@ -108,6 +114,9 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				consideration,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
+				recipient,
+				preHooks: pre_hooks,
+				postHooks: post_hooks,
 				status: OrderStatus.NEW,
 				createdAt: new Date(created_at)
 			}
@@ -121,6 +130,9 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
+				recipient,
+				preHooks: pre_hooks,
+				postHooks: post_hooks,
 				status: OrderStatus.FULFILLED,
 				transactionHash: order.status_metadata.transaction_hash,
 				blockHash: order.status_metadata.block_hash,
@@ -147,6 +159,9 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				offer,
 				nonce: BigInt(nonce),
 				deadline: BigInt(deadline),
+				recipient,
+				preHooks: pre_hooks,
+				postHooks: post_hooks,
 				status: OrderStatus.CANCELLED,
 				cause,
 				createdAt: new Date(created_at),
