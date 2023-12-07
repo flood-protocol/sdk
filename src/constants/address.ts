@@ -3,6 +3,6 @@ export const permit2NonceFinderAddress: `0x${string}` =
 export const permit2Address: `0x${string}` =
   "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 export const floodPlainAddress: `0x${string}` =
-  "0x000000003F4c09781f143A45D3897D533f94362c";
+  "0x0000000035E27018059dB10cd52527910E943F86";
 export const defaultZoneAddress: `0x${string}` =
   "0xf100D0CD34Ca557F432eA619D05938951c2A7E39";
