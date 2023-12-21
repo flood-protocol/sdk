@@ -2,7 +2,7 @@ import {
   permit2Address,
   permit2NonceFinderAddress,
   floodPlainAddress,
-  defaultZoneAddress,
+  floodSwapZoneAddress,
 } from "../constants/address.js";
 
 export enum FloodContract {
@@ -25,5 +25,5 @@ export const floodChainContracts: FloodChainContracts = {
   },
   permit2: { address: permit2Address },
   permit2NonceFinder: { address: permit2NonceFinderAddress },
-  defaultZone: { address: defaultZoneAddress },
+  defaultZone: { address: floodSwapZoneAddress },
 };

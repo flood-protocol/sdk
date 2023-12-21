@@ -16,7 +16,7 @@ import {
   type Item,
 } from "../types/order.js";
 import type { AtLeastOne } from "../types/index.js";
-import { bookAbi } from "../constants/abi.js";
+import { floodPlainAbi } from "../constants/abi.js";
 import { observe } from "./utils.js";
 import { Stream } from "./stream.js";
 
@@ -344,7 +344,7 @@ export function isValidOrderCall(
   return {
     to: chain.contracts.floodPlain.address,
     data: encodeFunctionData({
-      abi: bookAbi,
+      abi: floodPlainAbi,
       functionName: "getOrderStatus",
       args: [order],
     }),

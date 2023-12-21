@@ -12,7 +12,7 @@ import type { Order } from "../types/order.js";
 import { permit2Domain } from "./permit2.js";
 import type { FloodChain } from "../types/floodChain.js";
 import type { QuoteParameters } from "./quote.js";
-import { bookAbi } from "../constants/abi.js";
+import { floodPlainAbi } from "../constants/abi.js";
 
 export type NewOrderParameters = Omit<Order, "offer" | "consideration"> &
   Partial<Pick<Order, "deadline" | "zone">> &
@@ -173,7 +173,7 @@ export function etchOrderTransaction(
   return {
     to: chain.contracts.floodPlain.address,
     data: encodeFunctionData({
-      abi: bookAbi,
+      abi: floodPlainAbi,
       functionName: "etchOrder",
       args: [params],
     }),

@@ -450,7 +450,7 @@ export const permit2Abi = [
   },
 ] as const;
 
-export const bookAbi = [
+export const floodPlainAbi = [
   {
     type: "constructor",
     inputs: [
