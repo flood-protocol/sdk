@@ -1,7 +1,7 @@
-import type { Address } from "viem"
+import type { TokenList } from "@uniswap/token-lists"
 import type { FloodChain } from "../types/floodChain.js"
 
-export type GetTokensReturnType = Address[]
+export type GetTokensReturnType = TokenList
 
 /**
  *
@@ -18,7 +18,7 @@ export type GetTokensReturnType = Address[]
 export async function getTokens(
 	chain: FloodChain
 ): Promise<GetTokensReturnType> {
-	const url = `${chain.floodUrl}/tokens`
+	const url = `${chain.floodUrl}/tokenlist`
 
 	const response = await fetch(url, {
 		method: "GET",
@@ -30,7 +30,7 @@ export async function getTokens(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const { tokens } = (await response.json()) as { tokens: Address[] }
+	const tokenList = (await response.json()) as TokenList
 
-	return tokens
+	return tokenList
 }
