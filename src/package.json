@@ -56,7 +56,8 @@
   ],
   "peerDependencies": {
     "viem": "^1.16.6",
-    "typescript": ">=5.0.4"
+    "typescript": ">=5.0.4",
+    "@uniswap/token-lists": "^1.0.0-beta.33"
   },
   "peerDependenciesMeta": {
     "typescript": {
