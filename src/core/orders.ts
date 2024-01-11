@@ -3,6 +3,7 @@ import {
   type Address,
   type Hash,
   encodeFunctionData,
+  hexToBigInt
 } from "viem";
 import type { FloodChain } from "../types/floodChain.js";
 import {
@@ -46,6 +47,7 @@ type NewOrderAPI = OrderAPIBase & {
 };
 
 type FulfilledStatusMetadata = {
+  amount_out: `0x${string}`;
   address: `0x${string}`;
   block_hash: `0x${string}`;
   block_number: number;
@@ -139,7 +141,7 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
         blockNumber: BigInt(order.status_metadata.block_number),
         transactionIndex: order.status_metadata.transaction_index,
         logIndex: order.status_metadata.log_index,
-        amountOut: 0n,
+        amountOut: hexToBigInt(order.status_metadata.amount_out),
         createdAt: new Date(created_at),
         fulfilledAt: new Date(order.fulfilled_at),
       };
