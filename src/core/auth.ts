@@ -83,7 +83,7 @@ export async function getAuthMessage(
 ): Promise<GetAuthMessageReturnType> {
 	const url = `${chain.floodUrl}/auth/message`
 
-	let scopeParam = (() => {
+	const scopeParam = (() => {
 		switch (scope.type) {
 			case "zone":
 				return {

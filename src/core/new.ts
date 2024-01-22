@@ -1,22 +1,22 @@
 import {
-  hashTypedData,
-  stringify,
-  maxUint256,
-  encodeFunctionData,
-  type CallParameters,
-  type Address,
-  type Hash,
-} from "viem";
-import { permit2WitnessTypes, PrimaryType } from "../constants/types.js";
-import type { Order } from "../types/order.js";
-import { permit2Domain } from "./permit2.js";
-import type { FloodChain } from "../types/floodChain.js";
-import type { QuoteParameters } from "./quote.js";
-import { floodPlainAbi } from "../constants/abi.js";
+	hashTypedData,
+	stringify,
+	maxUint256,
+	encodeFunctionData,
+	type CallParameters,
+	type Address,
+	type Hash
+} from "viem"
+import { permit2WitnessTypes, PrimaryType } from "../constants/types.js"
+import type { Order } from "../types/order.js"
+import { permit2Domain } from "./permit2.js"
+import type { FloodChain } from "../types/floodChain.js"
+import type { QuoteParameters } from "./quote.js"
+import { floodPlainAbi } from "../constants/abi.js"
 
 export type NewOrderParameters = Omit<Order, "offer" | "consideration"> &
-  Partial<Pick<Order, "deadline" | "zone">> &
-  QuoteParameters & { minAmountOut: bigint };
+	Partial<Pick<Order, "deadline" | "zone">> &
+	QuoteParameters & { minAmountOut: bigint }
 /**
  * Creates a new order Flood order. This can then be signed and submitted to the Flood API.
  * @default `zone` to the main Flood zone, `deadline` to maxUint256 (order does not expire).
@@ -48,34 +48,34 @@ export type NewOrderParameters = Omit<Order, "offer" | "consideration"> &
  * });
  */
 export function newOrder(
-  chain: FloodChain,
-  {
-    tokensIn,
-    tokenOut,
-    minAmountOut,
-    offerer,
-    zone = chain.contracts.defaultZone.address,
-    recipient,
-    preHooks,
-    postHooks,
-    deadline = maxUint256,
-    nonce,
-  }: NewOrderParameters
+	chain: FloodChain,
+	{
+		tokensIn,
+		tokenOut,
+		minAmountOut,
+		offerer,
+		zone = chain.contracts.defaultZone.address,
+		recipient,
+		preHooks,
+		postHooks,
+		deadline = maxUint256,
+		nonce
+	}: NewOrderParameters
 ): Order {
-  return {
-    offerer,
-    recipient,
-    preHooks,
-    postHooks,
-    zone,
-    offer: Object.entries(tokensIn).map(([token, amount]) => ({
-      token: token as Address,
-      amount,
-    })),
-    consideration: { token: tokenOut, amount: minAmountOut },
-    deadline: deadline,
-    nonce,
-  };
+	return {
+		offerer,
+		recipient,
+		preHooks,
+		postHooks,
+		zone,
+		offer: Object.entries(tokensIn).map(([token, amount]) => ({
+			token: token as Address,
+			amount
+		})),
+		consideration: { token: tokenOut, amount: minAmountOut },
+		deadline: deadline,
+		nonce
+	}
 }
 
 /**
@@ -104,25 +104,25 @@ export function newOrder(
  * const orderHash = orderHash(arbitrum, order)
  */
 export function orderHash(chain: FloodChain, order: Order): Hash {
-  const permit = {
-    permitted: order.offer,
-    spender: chain.contracts.floodPlain.address,
-    nonce: order.nonce,
-    deadline: order.deadline,
-    witness: order,
-  };
-  return hashTypedData({
-    domain: permit2Domain(chain),
-    types: permit2WitnessTypes,
-    primaryType: PrimaryType.NEW,
-    message: permit,
-  });
+	const permit = {
+		permitted: order.offer,
+		spender: chain.contracts.floodPlain.address,
+		nonce: order.nonce,
+		deadline: order.deadline,
+		witness: order
+	}
+	return hashTypedData({
+		domain: permit2Domain(chain),
+		types: permit2WitnessTypes,
+		primaryType: PrimaryType.NEW,
+		message: permit
+	})
 }
 
 export type SubmitOrderParameters = {
-  order: Order;
-  signature: `0x${string}`;
-};
+	order: Order
+	signature: `0x${string}`
+}
 
 /**
  * @description
@@ -138,20 +138,20 @@ export type SubmitOrderParameters = {
  * }).then(() => console.log("Order submitted successfully"))
  */
 export async function submitOrder(
-  chain: FloodChain,
-  { order, signature }: SubmitOrderParameters
+	chain: FloodChain,
+	{ order, signature }: SubmitOrderParameters
 ): Promise<void> {
-  const response = await fetch(`${chain.floodUrl}/orders/new`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: stringify({ order, signature }),
-  });
+	const response = await fetch(`${chain.floodUrl}/orders/new`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: stringify({ order, signature })
+	})
 
-  if (response.status !== 200) {
-    throw new Error(`${response.status} ${response.statusText}`);
-  }
+	if (response.status !== 200) {
+		throw new Error(`${response.status} ${response.statusText}`)
+	}
 }
 
 /**
@@ -167,15 +167,15 @@ export async function submitOrder(
  * walletClient.sendTransaction({...tx, from: "0x.."})
  */
 export function etchOrderTransaction(
-  chain: FloodChain,
-  params: SubmitOrderParameters
+	chain: FloodChain,
+	params: SubmitOrderParameters
 ): CallParameters {
-  return {
-    to: chain.contracts.floodPlain.address,
-    data: encodeFunctionData({
-      abi: floodPlainAbi,
-      functionName: "etchOrder",
-      args: [params],
-    }),
-  };
+	return {
+		to: chain.contracts.floodPlain.address,
+		data: encodeFunctionData({
+			abi: floodPlainAbi,
+			functionName: "etchOrder",
+			args: [params]
+		})
+	}
 }

@@ -1,67 +1,60 @@
 {
-  "name": "flood-sdk",
-  "description": "Typescript SDK for interacting with the Flood protocol",
-  "version": "0.1.0-beta.4",
-  "author": "Flood",
-  "main": "./_cjs/index.js",
-  "module": "./_esm/index.js",
-  "types": "./_types/index.d.ts",
-  "typings": "./_types/index.d.ts",
-  "sideEffects": false,
-  "files": [
-    "*",
-    "!**/*.tsbuildinfo",
-    "!**/*.test.ts",
-    "!**/*.test.ts.snap",
-    "!**/*.test-d.ts",
-    "!tsconfig.build.json"
-  ],
-  "exports": {
-    ".": {
-      "types": "./_types/index.d.ts",
-      "import": "./_esm/index.js",
-      "default": "./_cjs/index.js"
-    },
-    "./types": {
-      "types": "./_types/types/index.d.ts",
-      "import": "./_esm/types/index.js",
-      "default": "./_cjs/types/index.js"
-    },
-    "./core": {
-      "types": "./_types/core/index.d.ts",
-      "import": "./_esm/core/index.js",
-      "default": "./_cjs/core/index.js"
-    },
-    "./chains": {
-      "types": "./_types/chains/index.d.ts",
-      "import": "./_esm/chains/index.js",
-      "default": "./_cjs/chains/index.js"
-    },
-    "./constants": {
-      "types": "./_types/constants/index.d.ts",
-      "import": "./_esm/constants/index.js",
-      "default": "./_cjs/constants/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "license": "MIT",
-  "repository": "flood-protocol/sdk",
-  "keywords": [
-    "eth",
-    "ethereum",
-    "flood",
-    "trading",
-    "routing",
-    "web3"
-  ],
-  "peerDependencies": {
-    "viem": "^1.16.6",
-    "typescript": ">=5.0.4",
-    "@uniswap/token-lists": "^1.0.0-beta.33"
-  },
-  "peerDependenciesMeta": {
-    "typescript": {
-      "optional": true
-    }
-  }
+	"name": "flood-sdk",
+	"description": "Typescript SDK for interacting with the Flood protocol",
+	"version": "0.1.0",
+	"author": "Flood",
+	"main": "./_cjs/index.js",
+	"module": "./_esm/index.js",
+	"types": "./_types/index.d.ts",
+	"typings": "./_types/index.d.ts",
+	"sideEffects": false,
+	"files": [
+		"*",
+		"!**/*.tsbuildinfo",
+		"!**/*.test.ts",
+		"!**/*.test.ts.snap",
+		"!**/*.test-d.ts",
+		"!tsconfig.build.json"
+	],
+	"exports": {
+		".": {
+			"types": "./_types/index.d.ts",
+			"import": "./_esm/index.js",
+			"default": "./_cjs/index.js"
+		},
+		"./types": {
+			"types": "./_types/types/index.d.ts",
+			"import": "./_esm/types/index.js",
+			"default": "./_cjs/types/index.js"
+		},
+		"./core": {
+			"types": "./_types/core/index.d.ts",
+			"import": "./_esm/core/index.js",
+			"default": "./_cjs/core/index.js"
+		},
+		"./chains": {
+			"types": "./_types/chains/index.d.ts",
+			"import": "./_esm/chains/index.js",
+			"default": "./_cjs/chains/index.js"
+		},
+		"./constants": {
+			"types": "./_types/constants/index.d.ts",
+			"import": "./_esm/constants/index.js",
+			"default": "./_cjs/constants/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"license": "MIT",
+	"repository": "flood-protocol/sdk",
+	"keywords": ["eth", "ethereum", "flood", "trading", "routing", "web3"],
+	"peerDependencies": {
+		"@uniswap/token-lists": "^1.0.0-beta.33",
+		"typescript": ">=5.0.4",
+		"viem": "^2.4.1"
+	},
+	"peerDependenciesMeta": {
+		"typescript": {
+			"optional": true
+		}
+	}
 }

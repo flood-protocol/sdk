@@ -23,7 +23,6 @@
     "format": "biome format . --write",
     "lint": "biome check .",
     "lint:fix": "bun run lint --apply",
-    "postinstall": "bun run contracts:build",
     "prepare": "bun x simple-git-hooks",
     "prepublishOnly": "bun scripts/prepublishOnly.ts"
   },
@@ -31,8 +30,5 @@
     "pre-commit": "bun run format && bun run lint:fix"
   },
   "type": "module",
-  "workspaces": [
-    "src",
-    "test"
-  ]
+  "workspaces": ["src", "test"]
 }

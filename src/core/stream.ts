@@ -77,11 +77,11 @@ export class Stream<Item> implements AsyncIterable<Item> {
 							data = JSON.parse(sse.data)
 						} catch (e) {
 							console.error(`Could not parse message into JSON: ${sse.data}`)
-							console.error(`From chunk:`, sse.raw)
+							console.error("From chunk:", sse.raw)
 							throw e
 						}
 
-						if (data && data.error) {
+						if (data?.error) {
 							throw new Error(undefined, data.error)
 						}
 
@@ -198,7 +198,7 @@ export class Stream<Item> implements AsyncIterable<Item> {
 					const { value, done } = await iter.next()
 					if (done) return ctrl.close()
 
-					const bytes = encoder.encode(JSON.stringify(value) + "\n")
+					const bytes = encoder.encode(`${JSON.stringify(value)}\n`)
 
 					ctrl.enqueue(bytes)
 				} catch (err) {
