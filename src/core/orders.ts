@@ -75,6 +75,12 @@ type CancelledOrderAPI = OrderAPIBase & {
 
 type OrderAPI = NewOrderAPI | FulfilledOrderAPI | CancelledOrderAPI
 
+type ListOrdersAPI = {
+	orders: OrderAPI[],
+	prev_cursor?: string;
+	next_cursor?: string;
+}
+
 /**
  * Convers an order from the Flood API to an {@link OrderWithStatus}.
  * @param order An order from the Flood API.
@@ -175,12 +181,33 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 	}
 }
 
-export type GetOrdersParameters = {
-	/** Address of who created the order */
-	offerer: Address
+interface BasePaginationParams {
+	limit?: number;
+};
+
+interface PaginationParamsWithBeforeCursor extends BasePaginationParams {
+	beforeCursor: string;
+	afterCursor?: never;
 }
 
-export type GetOrdersReturnType = OrderWithStatus[]
+interface PaginationParamsWithAfterCursor extends BasePaginationParams {
+	beforeCursor?: never;
+	afterCursor: string;
+}
+
+export type PaginationParams = BasePaginationParams | PaginationParamsWithBeforeCursor | PaginationParamsWithAfterCursor;
+
+export type GetOrdersParameters = {
+	/** Address of who created the order */
+	offerer: Address,
+	pagination?: PaginationParams
+};
+
+export type GetOrdersReturnType = {
+	orders: OrderWithStatus[],
+	prevCursor?: string;
+	nextCursor?: string;
+}
 
 /**
  *
@@ -202,9 +229,24 @@ export type GetOrdersReturnType = OrderWithStatus[]
 export async function getOrders(
 	chain: FloodChain,
 	authToken: string,
-	{ offerer }: GetOrdersParameters
+	{ offerer, pagination }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
-	const url = `${chain.floodUrl}/orders/list?address=${offerer}`
+	const rawUrl = `${chain.floodUrl}/orders/list`
+	const params: Record<string, any> = {
+		address: offerer,
+		limit: pagination?.limit,
+	};
+
+	if (pagination) {
+		if ("beforeCursor" in pagination) {
+			params.before_cursor = pagination.beforeCursor;
+		} else if ("afterCursor" in pagination) {
+			params.after_cursor = pagination.afterCursor;
+		}
+	}
+
+	const url = new URL(rawUrl);
+	url.search = new URLSearchParams(params).toString();
 
 	const response = await fetch(url, {
 		method: "GET",
@@ -217,9 +259,13 @@ export async function getOrders(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const orders = (await response.json()) as OrderAPI[]
+	const ordersResponse = (await response.json()) as ListOrdersAPI;
 
-	return orders.map(intoOrderWithStatus)
+	return {
+		orders: ordersResponse.orders.map(intoOrderWithStatus),
+		prevCursor: ordersResponse.prev_cursor,
+		nextCursor: ordersResponse.next_cursor
+	}
 }
 
 type OnOrder = (order: OrderWithStatus) => void

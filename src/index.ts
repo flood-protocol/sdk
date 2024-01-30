@@ -2,6 +2,8 @@ export {
 	quote,
 	type QuoteParameters,
 	getOrders,
+	type GetOrdersReturnType,
+	type PaginationParams,
 	watchOrders,
 	type WatchOrdersParameters,
 	isValidOrderCall,
