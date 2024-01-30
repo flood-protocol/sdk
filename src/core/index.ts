@@ -23,7 +23,9 @@ export {
 export { quote, type QuoteParameters } from "./quote.js"
 export {
 	getOrders,
+	type PaginationParams,
 	type GetOrdersParameters,
+	type GetOrdersReturnType,
 	watchOrders,
 	type WatchOrdersParameters,
 	isValidOrderCall
