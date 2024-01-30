@@ -234,10 +234,12 @@ export async function getOrders(
 	const rawUrl = `${chain.floodUrl}/orders/list`
 	const params: Record<string, any> = {
 		address: offerer,
-		limit: pagination?.limit,
 	};
 
 	if (pagination) {
+		if (pagination.limit) {
+			params.limit = pagination.limit;
+		}
 		if ("beforeCursor" in pagination) {
 			params.before_cursor = pagination.beforeCursor;
 		} else if ("afterCursor" in pagination) {
