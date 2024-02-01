@@ -147,7 +147,9 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 				blockNumber: BigInt(order.status_metadata.block_number),
 				transactionIndex: order.status_metadata.transaction_index,
 				logIndex: order.status_metadata.log_index,
-				amountOut: hexToBigInt(order.status_metadata.amount_out),
+				amountOut: order.status_metadata?.amount_out
+					? hexToBigInt(order.status_metadata.amount_out)
+					: BigInt(order.consideration.amount),
 				createdAt: new Date(created_at),
 				fulfilledAt: new Date(order.fulfilled_at)
 			}
