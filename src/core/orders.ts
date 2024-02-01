@@ -76,9 +76,9 @@ type CancelledOrderAPI = OrderAPIBase & {
 type OrderAPI = NewOrderAPI | FulfilledOrderAPI | CancelledOrderAPI
 
 type ListOrdersAPI = {
-	orders: OrderAPI[],
-	prev_cursor?: string;
-	next_cursor?: string;
+	orders: OrderAPI[]
+	prev_cursor?: string
+	next_cursor?: string
 }
 
 /**
@@ -182,31 +182,34 @@ function intoOrderWithStatus(order: OrderAPI): OrderWithStatus {
 }
 
 interface BasePaginationParams {
-	limit?: number;
-};
+	limit?: number
+}
 
 interface PaginationParamsWithBeforeCursor extends BasePaginationParams {
-	beforeCursor: string;
-	afterCursor?: never;
+	beforeCursor: string
+	afterCursor?: never
 }
 
 interface PaginationParamsWithAfterCursor extends BasePaginationParams {
-	beforeCursor?: never;
-	afterCursor: string;
+	beforeCursor?: never
+	afterCursor: string
 }
 
-export type PaginationParams = BasePaginationParams | PaginationParamsWithBeforeCursor | PaginationParamsWithAfterCursor;
+export type PaginationParams =
+	| BasePaginationParams
+	| PaginationParamsWithBeforeCursor
+	| PaginationParamsWithAfterCursor
 
 export type GetOrdersParameters = {
 	/** Address of who created the order */
-	offerer: Address,
+	offerer: Address
 	pagination?: PaginationParams
-};
+}
 
 export type GetOrdersReturnType = {
-	orders: OrderWithStatus[],
-	prevCursor?: string;
-	nextCursor?: string;
+	orders: OrderWithStatus[]
+	prevCursor?: string
+	nextCursor?: string
 }
 
 /**
@@ -233,22 +236,22 @@ export async function getOrders(
 ): Promise<GetOrdersReturnType> {
 	const rawUrl = `${chain.floodUrl}/orders/list`
 	const params: Record<string, any> = {
-		address: offerer,
-	};
+		address: offerer
+	}
 
 	if (pagination) {
 		if (pagination.limit) {
-			params.limit = pagination.limit;
+			params.limit = pagination.limit
 		}
 		if ("beforeCursor" in pagination) {
-			params.before_cursor = pagination.beforeCursor;
+			params.before_cursor = pagination.beforeCursor
 		} else if ("afterCursor" in pagination) {
-			params.after_cursor = pagination.afterCursor;
+			params.after_cursor = pagination.afterCursor
 		}
 	}
 
-	const url = new URL(rawUrl);
-	url.search = new URLSearchParams(params).toString();
+	const url = new URL(rawUrl)
+	url.search = new URLSearchParams(params).toString()
 
 	const response = await fetch(url, {
 		method: "GET",
@@ -261,7 +264,7 @@ export async function getOrders(
 	if (!response.ok) {
 		throw new Error(`${response.status} ${response.statusText}`)
 	}
-	const ordersResponse = (await response.json()) as ListOrdersAPI;
+	const ordersResponse = (await response.json()) as ListOrdersAPI
 
 	return {
 		orders: ordersResponse.orders.map(intoOrderWithStatus),

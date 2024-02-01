@@ -39,12 +39,14 @@ export {
 
 export type {
 	Hook,
+	Item,
 	Order,
 	OrderWithStatus,
 	FulfilledOrder,
 	CancelledOrder,
 	NewOrder,
-	Permit
+	Permit,
+	FloodChain
 } from "./types/index.js"
 export { OrderStatus, CancelReason } from "./types/order.js"
 

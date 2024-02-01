@@ -8,7 +8,8 @@ export type {
 	CancelledOrder,
 	FulfilledOrder,
 	NewOrder,
-	Hook
+	Hook,
+	Item
 } from "./order.js"
 export type { Permit } from "./permit.js"
 export type { AtLeastOne } from "./utils.js"
