@@ -188,13 +188,13 @@ interface BasePaginationParams {
 }
 
 interface PaginationParamsWithBeforeCursor extends BasePaginationParams {
-	beforeCursor: string
+	beforeCursor?: string
 	afterCursor?: never
 }
 
 interface PaginationParamsWithAfterCursor extends BasePaginationParams {
 	beforeCursor?: never
-	afterCursor: string
+	afterCursor?: string
 }
 
 export type PaginationParams =
@@ -245,9 +245,9 @@ export async function getOrders(
 		if (pagination.limit) {
 			params.limit = pagination.limit
 		}
-		if ("beforeCursor" in pagination) {
+		if ("beforeCursor" in pagination && pagination.beforeCursor) {
 			params.before_cursor = pagination.beforeCursor
-		} else if ("afterCursor" in pagination) {
+		} else if ("afterCursor" in pagination && pagination.afterCursor) {
 			params.after_cursor = pagination.afterCursor
 		}
 	}
