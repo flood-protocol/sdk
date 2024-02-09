@@ -204,7 +204,7 @@ export type PaginationParams =
 
 export type GetOrdersParameters = {
 	/** Address of who created the order */
-	offerer: Address
+	offerer?: Address
 	pagination?: PaginationParams
 }
 
@@ -237,8 +237,10 @@ export async function getOrders(
 	{ offerer, pagination }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
 	const rawUrl = `${chain.floodUrl}/orders/list`
-	const params: Record<string, any> = {
-		address: offerer
+	const params: Record<string, any> = {}
+
+	if (offerer) {
+		params.address = offerer
 	}
 
 	if (pagination) {
