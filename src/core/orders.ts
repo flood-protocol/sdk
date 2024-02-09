@@ -204,7 +204,7 @@ export type PaginationParams =
 
 export type GetOrdersParameters = {
 	/** Address of who created the order */
-	offerer: Address
+	offerer?: Address
 	pagination?: PaginationParams
 }
 
@@ -237,8 +237,10 @@ export async function getOrders(
 	{ offerer, pagination }: GetOrdersParameters
 ): Promise<GetOrdersReturnType> {
 	const rawUrl = `${chain.floodUrl}/orders/list`
-	const params: Record<string, any> = {
-		address: offerer
+	const params: Record<string, any> = {}
+
+	if (offerer) {
+		params.address = offerer
 	}
 
 	if (pagination) {
@@ -282,7 +284,7 @@ type OnCancelledOrder = (order: CancelledOrder) => void
 type OnError = (error: Error) => void
 
 export type WatchOrdersParameters = {
-	offerer: `0x${string}`
+	offerer?: `0x${string}`
 	onError?: OnError
 } & AtLeastOne<{
 	onOrder: OnOrder
@@ -337,18 +339,26 @@ export async function watchOrders(
 		{ onOrder, onNew, onFulfilled, onCancelled, onError },
 		async (emit) => {
 			const controller = new AbortController()
-			const response = await fetch(
-				`${chain.floodUrl}/orders/stream?address=${offerer.toLowerCase()}`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${authToken}`,
-						"Content-Type": "text/event-stream",
-						"Cache-Control": "no-store"
-					},
-					signal: controller.signal
-				}
-			)
+
+			const rawUrl = `${chain.floodUrl}/orders/stream`
+			const params: Record<string, any> = {}
+
+			if (offerer) {
+				params.address = offerer
+			}
+
+			const url = new URL(rawUrl)
+			url.search = new URLSearchParams(params).toString()
+
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${authToken}`,
+					"Content-Type": "text/event-stream",
+					"Cache-Control": "no-store"
+				},
+				signal: controller.signal
+			})
 			if (!response.ok) {
 				throw new Error(`${response.status} ${response.statusText}`)
 			}
